@@ -1,0 +1,67 @@
+<div class="cards-container">
+    <div *ngIf="supportsSerial;else noSerial">
+
+        <mat-card>
+            <mat-card-title>Logging av data</mat-card-title>
+            <div class="channel-selection">
+                <span>Radiogruppe: </span>
+                <mat-form-field style="width: 50px;">
+                    <input matInput style="text-align: right;" type="number" min="0" max="255" [(ngModel)]="channel"
+                        (change)="onChannelChange()">
+                </mat-form-field>
+                <span>Motatte meldinger: {{messageCount}}</span>
+            </div>
+
+            <mat-card-content>
+                <h3>Forrige melding:</h3>
+                <div>Meldingstype: {{lastMessage ? lastMessage.type : ''}}</div>
+                <div>Tidstempel: {{lastMessage ? lastMessage.timestamp : ''}}</div>
+                <div>Data: {{lastMessage ? lastMessage.data : ''}}</div>
+                <div>RSSI: {{lastMessage ? lastMessage.rssi : ''}}</div>
+                <div>micro:bit-ID: {{lastMessage ? lastMessage.microBitId : ''}}</div>
+
+                <mat-card-actions style="text-align: center;">
+                    <button mat-raised-button color="accent"
+                        (click)="toggleConnection()">{{connected ? 'Koble fra' : 'Koble til'}}</button>
+                </mat-card-actions>
+            </mat-card-content>
+
+        </mat-card>
+        <mat-card>
+                <mat-card-title>Last ned data</mat-card-title>
+                <div class="channel-selection">
+                    <span>micro:bit-ID: </span>
+                    <mat-form-field style="width: 100px; margin-right: 10px;">
+                            <mat-select [(value)]="selectedId">
+                            <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
+                          </mat-select>
+                    </mat-form-field>
+                    <span>Inkluder rådata:</span>
+                    <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRawhex">
+                    </mat-slide-toggle>
+                </div>
+    
+                <mat-card-content>
+                    <mat-card-actions style="text-align: center;">
+                        <button mat-raised-button color="accent" (click)="saveFile()"
+                            [disabled]="receivedPackets.length < 1">Lagre fil</button>
+                    </mat-card-actions>
+                </mat-card-content>
+            </mat-card>
+    </div>
+    <ng-template #noSerial>
+        <mat-card>
+            <mat-card-title>Functionality not supported</mat-card-title>
+            <mat-card-content>
+                <i>
+                    This browser either has no support for reading serial ports, or this is not enabled.
+                    Newer versions of Chrome is known to work, but you might have to enable the experimental feature by
+                    entering this in your address bar:
+                    chrome://flags/#enable-experimental-web-platform-features
+                </i>
+            </mat-card-content>
+        </mat-card>
+    </ng-template>
+
+
+</div>
