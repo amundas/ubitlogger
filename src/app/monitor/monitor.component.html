@@ -14,15 +14,14 @@
 
             <mat-card-content>
                 <h3>Forrige melding:</h3>
-                <div>Meldingstype: {{lastMessage ? lastMessage.type : ''}}</div>
                 <div>Tidstempel: {{lastMessage ? lastMessage.timestamp : ''}}</div>
                 <div>Data: {{lastMessage ? lastMessage.key + '=' + lastMessage.data[lastMessage.key] : ''}}</div>
-                <div>RSSI: {{lastMessage ? lastMessage.rssi : ''}}</div>
+                <div>Signalstyrke: {{lastMessage ? lastMessage.rssi : ''}}</div>
                 <div>micro:bit-ID: {{lastMessage ? lastMessage.microBitId : ''}}</div>
 
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent"
-                        (click)="toggleConnection()">{{connected ? 'Koble fra' : 'Koble til'}}</button>
+                        (click)="toggleConnection()">{{serialService.connected ? 'Koble fra' : 'Koble til'}}</button>
                 </mat-card-actions>
             </mat-card-content>
 
@@ -38,6 +37,9 @@
                     </mat-form-field>
                     <span>Inkluder rådata:</span>
                     <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRawhex">
+                    </mat-slide-toggle>
+                    <span>Inkluder Signalstyrke:</span>
+                    <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRSSI">
                     </mat-slide-toggle>
                 </div>
     
