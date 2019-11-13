@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { SerialService } from '../serial.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { SerialService } from '../serial.service';
     templateUrl: './identify.component.html',
     styleUrls: ['./identify.component.css']
 })
-export class IdentifyComponent {
+export class IdentifyComponent implements OnDestroy {
 
     constructor(public serialService: SerialService) { }
     channel = 0;
@@ -40,11 +40,16 @@ export class IdentifyComponent {
         this.channel = this.channel > 255 ? 255 : this.channel;
         this.serialService.setChannel(this.channel);
     }
+
     toggleScan() {
         this.scanning = !this.scanning;
         if(this.scanning) {
             this.lastId = '';
             this.first = true;
         }
+    }
+
+    ngOnDestroy(){
+        this.serialService.disconnect();
     }
 }

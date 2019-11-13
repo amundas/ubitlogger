@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { SerialService, MircoBitPacket } from '../serial.service';
 
@@ -7,7 +7,7 @@ import { SerialService, MircoBitPacket } from '../serial.service';
   templateUrl: './monitor.component.html',
   styleUrls: ['./monitor.component.css']
 })
-export class MonitorComponent implements OnInit {
+export class MonitorComponent implements OnInit, OnDestroy {
     constructor(public serialService: SerialService) {}
     lastMessage: MircoBitPacket;
     supportsSerial = true;
@@ -32,6 +32,12 @@ export class MonitorComponent implements OnInit {
             this.serialService.packetSubject.subscribe(pkt => {
                 this.receivedPackets.push(pkt);
                 this.lastMessage = pkt;
+                if(this.seenKeys.indexOf(pkt.key) === -1) {
+                    this.seenKeys.push(pkt.key);
+                }
+                if(this.seenIds.indexOf(pkt.microBitId) === -1) {
+                    this.seenIds.push(pkt.microBitId);
+                }
             });
         }
     }
@@ -68,5 +74,9 @@ export class MonitorComponent implements OnInit {
         this.channel = this.channel < 0 ? 0 : this.channel;
         this.channel = this.channel > 255 ? 255 : this.channel;
         this.serialService.setChannel(this.channel);
+    }
+
+    ngOnDestroy(){
+        this.serialService.disconnect();
     }
 }
