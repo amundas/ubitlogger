@@ -32,6 +32,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
             this.serialService.packetSubject.subscribe(pkt => {
                 this.receivedPackets.push(pkt);
                 this.lastMessage = pkt;
+                this.messageCount ++;
                 if(this.seenKeys.indexOf(pkt.key) === -1) {
                     this.seenKeys.push(pkt.key);
                 }
@@ -68,6 +69,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     
     clearData() {
         this.receivedPackets = [];
+        this.messageCount = 0;
     }
 
     onChannelChange() {
