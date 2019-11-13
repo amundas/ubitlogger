@@ -16,7 +16,7 @@
                 <h3>Forrige melding:</h3>
                 <div>Meldingstype: {{lastMessage ? lastMessage.type : ''}}</div>
                 <div>Tidstempel: {{lastMessage ? lastMessage.timestamp : ''}}</div>
-                <div>Data: {{lastMessage ? lastMessage.data : ''}}</div>
+                <div>Data: {{lastMessage ? lastMessage.key + '=' + lastMessage.data[lastMessage.key] : ''}}</div>
                 <div>RSSI: {{lastMessage ? lastMessage.rssi : ''}}</div>
                 <div>micro:bit-ID: {{lastMessage ? lastMessage.microBitId : ''}}</div>
 
@@ -44,7 +44,9 @@
                 <mat-card-content>
                     <mat-card-actions style="text-align: center;">
                         <button mat-raised-button color="accent" (click)="saveFile()"
-                            [disabled]="receivedPackets.length < 1">Lagre fil</button>
+                            [disabled]="receivedPackets.length == 0">Lagre fil</button>
+                            <button mat-raised-button color="accent" (click)="clearData()"
+                            [disabled]="receivedPackets.length == 0">Slett data</button>
                     </mat-card-actions>
                 </mat-card-content>
             </mat-card>

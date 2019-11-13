@@ -20,6 +20,7 @@ export class MonitorComponent implements OnInit {
     port;
     selectedId = 'Alle';
     seenIds: string[] = ['Alle'];
+    seenKeys: string[] = [];
 
     ngOnInit() {
        if (!navigator['serial']) {
@@ -65,6 +66,9 @@ export class MonitorComponent implements OnInit {
 
             if (this.pkt.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
                 this.lastMessage = new MircoBitPacket(this.parseRawData(this.pkt));
+                if (this.seenKeys.indexOf(this.lastMessage.key) == -1) {
+                    this.seenKeys.push(this.lastMessage.key);
+                }
                 this.receivedPackets.push(this.lastMessage);
                 this.messageCount ++;
                 if (this.seenIds.indexOf(this.lastMessage.microBitId) === -1) {
@@ -101,18 +105,27 @@ export class MonitorComponent implements OnInit {
         const date = new Date();
         const filename = `data_${("0" + date.getHours()).slice(-2)}${("0" + date.getMinutes()).slice(-2)}.csv`
         const filteredPackets = this.selectedId === 'Alle' ? this.receivedPackets : this.receivedPackets.filter(e => e.microBitId === this.selectedId);
-        if (this.includeRawhex) {
-            saveAs(new Blob(['microbitID,Time,Type,Data,RSSI,RawHex\n', 
-            filteredPackets.map(e => `${e.microBitId},${e.timestamp},${e.type},${e.data},${e.rssi},${e.rawHex}\n`).join('')], { type: "text" }),
-            filename);
-        } else {
-            saveAs(new Blob(['microbitID,Time,Type,Data,RSSI\n', 
-            filteredPackets.map(e => `${e.microBitId},${e.timestamp},${e.type},${e.data},${e.rssi}\n`).join('')], { type: "text" }),
-            filename);
-           
-        }
+        let keys ='microbitID,Time,Type';
+        this.seenKeys.forEach(key => {
+            keys += `,${key}`;
+        });
+        keys += `,RSSI${this.includeRawhex ? ',RawHex' : ''}\n`;
+        saveAs(new Blob([keys, 
+        filteredPackets.map(e => {
+            let rowString =   `${e.microBitId},${e.timestamp},${e.type}`;
+            this.seenKeys.forEach(key => {
+                rowString += `,${e.data[key] ? e.data[key] : ''}`;
+            });
+            rowString += `,${e.rssi}${this.includeRawhex ? ',' + e.rawHex : ''}\n`;
+            return rowString;
+        }).join('')], { type: "text" }),
+        filename);
     }
     
+    clearData() {
+        this.receivedPackets = [];
+    }
+
     onChannelChange() {
         this.channel = this.channel < 0 ? 0 : this.channel;
         this.channel = this.channel > 255 ? 255 : this.channel;
@@ -138,29 +151,33 @@ class MircoBitPacket {
         this.microBitId = this.rawHex.slice(16, 24);
         this.timestamp = convertTypedArray(new Uint8Array(rawData.slice(4, 8)), Uint32Array)[0];
         this.type = rawData[3];
+        this.data = {};
 
         switch(rawData[3]) {
             case 0: // int
-                this.data = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
+                this.key = 'Data';
+                this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
                 break;
             case 1: // "key" = int
-                var key = rawData.slice(17, 17 + rawData[16]).map(e => String.fromCharCode(e)).join('');
+                this.key = 'Data_' + rawData.slice(17, 17 + rawData[16]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
-                this.data = `${key}=${val}`
+                this.data[this.key] = val;
                 break;
             case 2: // string
-                this.data = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
+                this.key = 'Data';
+                this.data[this.key] = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
                 break;
-            case 3: // never seen it :/
+            case 3: // never seen it :/ Probably supposed to be "key"=string, but that is not available in makecode
                 this.data = -1;
                 break;
             case 4: // double
-                this.data = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
+                this.key = 'Data';
+                this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
                 break;
             case 5: // "key"=double
-                var key = rawData.slice(21, 21 + rawData[20]).map(e => String.fromCharCode(e)).join('');
+                this.key = 'Data_' + rawData.slice(21, 21 + rawData[20]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
-                this.data = `${key}=${val}`
+                this.data[this.key] = val;
                 break;
             default:
                 break;
@@ -172,4 +189,5 @@ class MircoBitPacket {
     public data: any;
     public microBitId: string;
     public rssi: number;
+    public key;
 }
