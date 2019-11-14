@@ -35,12 +35,12 @@ export class ChartService {
       },
   }
 
-  getChart(chartData: ChartData[], chartRef: any): any {
+  getChart(chartData: ChartData[], chartRef: any, showLine: boolean): any {
     let datasets = [];
       for (let i = 0; i < chartData.length; i++) {
         const newDataSet = {
             label: chartData[i].label,
-            showLine: true,
+            showLine: showLine,
             data: chartData[i].data,
             borderColor: chartData[i].color,
             fill: false,

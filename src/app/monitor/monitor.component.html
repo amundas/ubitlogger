@@ -22,36 +22,64 @@
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent"
                         (click)="toggleConnection()">{{serialService.connected ? 'Koble fra' : 'Koble til'}}</button>
-                        <button mat-raised-button color="accent" (click)="clearData()"
+                    <button mat-raised-button color="accent" (click)="clearData()"
                         [disabled]="receivedPackets.length == 0">Slett data</button>
                 </mat-card-actions>
             </mat-card-content>
 
         </mat-card>
         <mat-card>
-                <mat-card-title>Last ned data</mat-card-title>
-                <div class="channel-selection">
-                    <span>micro:bit-ID: </span>
-                    <mat-form-field style="width: 100px; margin-right: 10px;">
-                            <mat-select [(value)]="selectedId">
-                            <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
-                          </mat-select>
-                    </mat-form-field>
-                    <span>Inkluder rådata:</span>
-                    <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRawhex">
-                    </mat-slide-toggle>
-                    <span>Inkluder Signalstyrke:</span>
-                    <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRSSI">
-                    </mat-slide-toggle>
-                </div>
-    
-                <mat-card-content>
-                    <mat-card-actions style="text-align: center;">
-                        <button mat-raised-button color="accent" (click)="saveFile()"
-                            [disabled]="receivedPackets.length == 0">Lagre fil</button>
-                    </mat-card-actions>
-                </mat-card-content>
-            </mat-card>
+            <mat-card-title>Last ned data</mat-card-title>
+            <div class="channel-selection">
+                <span>micro:bit-ID: </span>
+                <mat-form-field style="width: 100px; margin-right: 10px;">
+                    <mat-select [(value)]="selectedId">
+                        <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <span>Inkluder rådata:</span>
+                <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRawhex">
+                </mat-slide-toggle>
+                <span>Inkluder Signalstyrke:</span>
+                <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRSSI">
+                </mat-slide-toggle>
+            </div>
+
+            <mat-card-content>
+                <mat-card-actions style="text-align: center;">
+                    <button mat-raised-button color="accent" (click)="saveFile()"
+                        [disabled]="receivedPackets.length == 0">Lagre fil</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+            <mat-card-title>Plotting av data</mat-card-title>
+            <span>micro:bit-ID: </span>
+            <mat-form-field style="width: 100px; margin-right: 10px;">
+                <mat-select [(value)]="idToPlot">
+                    <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span>Data: </span>
+            <mat-form-field style="width: 100px; margin-right: 10px;">
+                <mat-select [(value)]="keyToPlot">
+                    <mat-option *ngFor="let key of seenKeys" [value]="key">{{key}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span>Trekk linjer:</span>
+            <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="showLine">
+            </mat-slide-toggle>
+            <div style="display: block">
+                <canvas #chartCanvas></canvas>
+            </div>
+            <mat-card-content>
+                <mat-card-actions style="text-align: center;">
+                    <button mat-raised-button color="accent" (click)="plotData()"
+                        [disabled]="this.receivedPackets.length === 0 || idToPlot ==='Alle' || !keyToPlot">Plott</button>
+                </mat-card-actions>
+            </mat-card-content>
+        </mat-card>
 
     </div>
     <ng-template #noSerial>
@@ -67,30 +95,4 @@
             </mat-card-content>
         </mat-card>
     </ng-template>
-
-    <mat-card>
-            <mat-card-title>Plotting av data</mat-card-title>
-            <span>micro:bit-ID: </span>
-            <mat-form-field style="width: 100px; margin-right: 10px;">
-                    <mat-select [(value)]="idToPlot">
-                    <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
-                  </mat-select>
-            </mat-form-field>
-            <span>Data: </span>
-            <mat-form-field style="width: 100px; margin-right: 10px;">
-                    <mat-select [(value)]="keyToPlot">
-                    <mat-option *ngFor="let key of seenKeys" [value]="key">{{key}}</mat-option>
-                  </mat-select>
-            </mat-form-field>
-            <div style="display: block">
-                    <canvas #chartCanvas></canvas>
-            </div>
-            <mat-card-content>
-                <mat-card-actions style="text-align: center;">
-                        <button mat-raised-button color="accent" (click)="plotData()"
-                        [disabled]="this.receivedPackets.length === 0 || idToPlot ==='Alle' || !keyToPlot">Plott</button>
-                </mat-card-actions>
-            </mat-card-content>
-    </mat-card>
-
 </div>

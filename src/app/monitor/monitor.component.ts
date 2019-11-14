@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material';
   styleUrls: ['./monitor.component.css']
 })
 export class MonitorComponent implements OnInit, OnDestroy {
-    @ViewChild('chartCanvas', { static: true }) public chartRef;
+    @ViewChild('chartCanvas', { static: false }) public chartRef;
 
     constructor(public serialService: SerialService, public chartService: ChartService, private snackbar: MatSnackBar) {}
     lastMessage: MircoBitPacket;
@@ -25,6 +25,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     seenKeys: string[] = [];
     idToPlot = 'Alle';
     keyToPlot = '';
+    showLine = false;
 
     ngOnInit() {
         this.supportsSerial = this.serialService.serialSupported() ? true : false;
@@ -107,7 +108,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
 
         } else if (filteredPackets.length !== 0) {
             const data = new ChartData('#00AEFF', this.keyToPlot, filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })));
-            this.chartService.getChart([data], this.chartRef);
+            this.chartService.getChart([data], this.chartRef, this.showLine);
         } else {
             this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', 2000);
         }
