@@ -21,6 +21,8 @@
     "@angular/platform-browser": "~8.2.0",
     "@angular/platform-browser-dynamic": "~8.2.0",
     "@angular/router": "~8.2.0",
+    "chart.js": "^2.9.2",
+    "chartjs-plugin-zoom": "^0.7.5",
     "file-saver": "^2.0.2",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.4.0",

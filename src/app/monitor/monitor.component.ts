@@ -1,6 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { SerialService, MircoBitPacket } from '../serial.service';
+import { ChartService, ChartData } from '../chart.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-monitor',
@@ -8,7 +10,9 @@ import { SerialService, MircoBitPacket } from '../serial.service';
   styleUrls: ['./monitor.component.css']
 })
 export class MonitorComponent implements OnInit, OnDestroy {
-    constructor(public serialService: SerialService) {}
+    @ViewChild('chartCanvas', { static: true }) public chartRef;
+
+    constructor(public serialService: SerialService, public chartService: ChartService, private snackbar: MatSnackBar) {}
     lastMessage: MircoBitPacket;
     supportsSerial = true;
     receivedPackets:MircoBitPacket[] = []
@@ -19,6 +23,8 @@ export class MonitorComponent implements OnInit, OnDestroy {
     selectedId = 'Alle';
     seenIds: string[] = ['Alle'];
     seenKeys: string[] = [];
+    idToPlot = 'Alle';
+    keyToPlot = '';
 
     ngOnInit() {
         this.supportsSerial = this.serialService.serialSupported() ? true : false;
@@ -47,7 +53,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     saveFile() {
         const date = new Date();
         const filename = `data_${("0" + date.getHours()).slice(-2)}${("0" + date.getMinutes()).slice(-2)}.csv`
-        const filteredPackets = this.selectedId === 'Alle' ? this.receivedPackets : this.receivedPackets.filter(e => e.microBitId === this.selectedId);
+        const filteredPackets = this.getFilteredPackets(this.selectedId);
         let keys ='microbitID,Time';
         this.seenKeys.forEach(key => {
             keys += `,${key}`;
@@ -80,5 +86,35 @@ export class MonitorComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(){
         this.serialService.disconnect();
+    }
+    
+    getFilteredPackets(id?: string, key?: string): MircoBitPacket[] {
+        let filteredPackets = [];
+        filteredPackets = (id && id !== 'Alle') ? this.receivedPackets.filter(e => e.microBitId === id) : this.receivedPackets;
+        if (key === '') {
+            filteredPackets = [];
+        } else if (key) {
+            filteredPackets = filteredPackets.filter(e => e.key === key);
+        } 
+        
+        return filteredPackets;
+    }
+    
+    plotData() {
+        let filteredPackets = this.getFilteredPackets(this.idToPlot, this.keyToPlot);
+        if (filteredPackets.length > 5000) { // Protects users form themselves. Plotting too much will make the browser unresponsive
+            this.openSnackBar('For mye data for å plotte', 2000);
+
+        } else if (filteredPackets.length !== 0) {
+            const data = new ChartData('#00AEFF', this.keyToPlot, filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })));
+            this.chartService.getChart([data], this.chartRef);
+        } else {
+            this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', 2000);
+        }
+
+    }
+
+    openSnackBar(message: string, duration: number) {
+        this.snackbar.open(message, '', {duration: duration})
     }
 }

@@ -22,6 +22,8 @@
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent"
                         (click)="toggleConnection()">{{serialService.connected ? 'Koble fra' : 'Koble til'}}</button>
+                        <button mat-raised-button color="accent" (click)="clearData()"
+                        [disabled]="receivedPackets.length == 0">Slett data</button>
                 </mat-card-actions>
             </mat-card-content>
 
@@ -47,11 +49,10 @@
                     <mat-card-actions style="text-align: center;">
                         <button mat-raised-button color="accent" (click)="saveFile()"
                             [disabled]="receivedPackets.length == 0">Lagre fil</button>
-                            <button mat-raised-button color="accent" (click)="clearData()"
-                            [disabled]="receivedPackets.length == 0">Slett data</button>
                     </mat-card-actions>
                 </mat-card-content>
             </mat-card>
+
     </div>
     <ng-template #noSerial>
         <mat-card>
@@ -67,5 +68,29 @@
         </mat-card>
     </ng-template>
 
+    <mat-card>
+            <mat-card-title>Plotting av data</mat-card-title>
+            <span>micro:bit-ID: </span>
+            <mat-form-field style="width: 100px; margin-right: 10px;">
+                    <mat-select [(value)]="idToPlot">
+                    <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
+                  </mat-select>
+            </mat-form-field>
+            <span>Data: </span>
+            <mat-form-field style="width: 100px; margin-right: 10px;">
+                    <mat-select [(value)]="keyToPlot">
+                    <mat-option *ngFor="let key of seenKeys" [value]="key">{{key}}</mat-option>
+                  </mat-select>
+            </mat-form-field>
+            <div style="display: block">
+                    <canvas #chartCanvas></canvas>
+            </div>
+            <mat-card-content>
+                <mat-card-actions style="text-align: center;">
+                        <button mat-raised-button color="accent" (click)="plotData()"
+                        [disabled]="this.receivedPackets.length === 0 || idToPlot ==='Alle' || !keyToPlot">Plott</button>
+                </mat-card-actions>
+            </mat-card-content>
+    </mat-card>
 
 </div>

@@ -9,7 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { MatIconModule, MatDialogModule, MatCardModule, MatInputModule, MatSlideToggleModule, MatSelectModule, MatProgressBarModule } from '@angular/material';
+import { MatIconModule, MatDialogModule, MatCardModule, MatInputModule, MatSlideToggleModule, 
+        MatSelectModule, MatProgressBarModule, MatSnackBarModule } from '@angular/material';
 import { ExampleComponent } from './example/example.component';
 import { MonitorComponent } from './monitor/monitor.component';
 import { FormsModule } from '@angular/forms';
@@ -37,7 +38,8 @@ import { IdentifyComponent } from './identify/identify.component';
     FormsModule,
     MatSlideToggleModule,
     MatSelectModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
