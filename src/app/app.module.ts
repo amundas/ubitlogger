@@ -15,13 +15,15 @@ import { ExampleComponent } from './example/example.component';
 import { MonitorComponent } from './monitor/monitor.component';
 import { FormsModule } from '@angular/forms';
 import { IdentifyComponent } from './identify/identify.component';
+import { SetupComponent } from './setup/setup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExampleComponent,
     MonitorComponent,
-    IdentifyComponent
+    IdentifyComponent,
+    SetupComponent
   ],
   imports: [
     BrowserModule,
