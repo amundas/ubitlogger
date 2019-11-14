@@ -108,20 +108,19 @@ export class MircoBitPacket {
         this.rssi = rawData[rawData.length-1] * -1;
         this.microBitId = this.rawHex.slice(16, 24);
         this.timestamp = convertTypedArray(new Uint8Array(rawData.slice(4, 8)), Uint32Array)[0];
-        this.type = rawData[3];
         this.data = {};
-
+        // rawData[3] contains a number specifying the type of the packet
         switch(rawData[3]) {
-            case 0: // int
+            case 0: // int32
                 this.key = 'Data';
                 this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
                 break;
-            case 1: // "key" = int
+            case 1: // "key" = int32. Key length specified in rawData[16]
                 this.key = 'Data_' + rawData.slice(17, 17 + rawData[16]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
                 this.data[this.key] = val;
                 break;
-            case 2: // string
+            case 2: // string, length specified in rawData[12]
                 this.key = 'Data';
                 this.data[this.key] = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
                 break;
@@ -132,7 +131,7 @@ export class MircoBitPacket {
                 this.key = 'Data';
                 this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
                 break;
-            case 5: // "key"=double
+            case 5: // "key"=double. Key length specified in rawData[20]
                 this.key = 'Data_' + rawData.slice(21, 21 + rawData[20]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
                 this.data[this.key] = val;
@@ -142,7 +141,6 @@ export class MircoBitPacket {
         }
     }
     public rawHex: string;
-    public type: number;
     public timestamp: number; // milliseconds since microbit started
     public data: any;
     public microBitId: string;
