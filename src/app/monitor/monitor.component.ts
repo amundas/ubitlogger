@@ -20,11 +20,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
     channel = 0;
     includeRawhex = false;
     includeRSSI = false;
-    selectedId = 'Alle';
-    seenIds: string[] = ['Alle'];
-    seenKeys: string[] = [];
-    idToPlot = 'Alle';
+    seenKeys: any = {}; // id as key, list of keys as value
+    seenIds = []
+    idToPlot = '';
     keyToPlot = '';
+    idToDownload = 'Alle';
     showLine = false;
 
     ngOnInit() {
@@ -40,11 +40,11 @@ export class MonitorComponent implements OnInit, OnDestroy {
                 this.receivedPackets.push(pkt);
                 this.lastMessage = pkt;
                 this.messageCount ++;
-                if(this.seenKeys.indexOf(pkt.key) === -1) {
-                    this.seenKeys.push(pkt.key);
-                }
-                if(this.seenIds.indexOf(pkt.microBitId) === -1) {
+                if (!this.seenKeys[pkt.microBitId]) {
                     this.seenIds.push(pkt.microBitId);
+                    this.seenKeys[pkt.microBitId] = [pkt.key];
+                } else if(this.seenKeys[pkt.microBitId].indexOf(pkt.key) === -1) {
+                    this.seenKeys[pkt.microBitId].push(pkt.key);
                 }
             });
         }
@@ -54,21 +54,33 @@ export class MonitorComponent implements OnInit, OnDestroy {
     saveFile() {
         const date = new Date();
         const filename = `data_${("0" + date.getHours()).slice(-2)}${("0" + date.getMinutes()).slice(-2)}.csv`
-        const filteredPackets = this.getFilteredPackets(this.selectedId);
-        let keys ='microbitID,Time';
-        this.seenKeys.forEach(key => {
-            keys += `,${key}`;
+        const filteredPackets = this.getFilteredPackets(this.idToDownload);
+        let topRow ='microbitID,Time';
+        let uniqueKeys = [];
+        if (this.idToDownload === 'Alle') {
+            this.seenIds.forEach(id => {
+                this.seenKeys[id].forEach(k => {
+                    if (uniqueKeys.indexOf(k) === -1) {
+                        uniqueKeys.push(k);
+                    }
+                });
+            });
+        } else {
+            uniqueKeys = this.seenKeys[this.idToDownload];
+        }
+        uniqueKeys.forEach(key => {
+            topRow += `,${key}`;
         });
-        keys += `${this.includeRSSI ? ',Signalstyrke' : ''}`;
-        keys += `${this.includeRawhex ? ',Rådata' : ''}\n`;
-        saveAs(new Blob([keys, 
+        topRow += `${this.includeRSSI ? ',Signalstyrke' : ''}`;
+        topRow += `${this.includeRawhex ? ',Rådata' : ''}\n`;
+        saveAs(new Blob([topRow, 
         filteredPackets.map(e => {
             let rowString =   `${e.microBitId},${e.timestamp}`;
-            this.seenKeys.forEach(key => {
+            uniqueKeys.forEach(key => {
                 rowString += `,${e.data[key] ? e.data[key] : ''}`;
             });
-            rowString += `,${this.includeRSSI ? ',' + e.rssi : ''}`
-            rowString += `,${this.includeRawhex ? ',' + e.rawHex : ''}\n`;
+            rowString += `${this.includeRSSI ? ',' + e.rssi : ''}`
+            rowString += `${this.includeRawhex ? ',' + e.rawHex : ''}\n`;
             return rowString;
         }).join('')], { type: "text" }),
         filename);
@@ -76,6 +88,9 @@ export class MonitorComponent implements OnInit, OnDestroy {
     
     clearData() {
         this.receivedPackets = [];
+        this.seenKeys = {};
+        this.seenIds = [];
+        this.idToDownload = 'Alle';
         this.messageCount = 0;
     }
 
@@ -91,7 +106,7 @@ export class MonitorComponent implements OnInit, OnDestroy {
     
     getFilteredPackets(id?: string, key?: string): MircoBitPacket[] {
         let filteredPackets = [];
-        filteredPackets = (id && id !== 'Alle') ? this.receivedPackets.filter(e => e.microBitId === id) : this.receivedPackets;
+        filteredPackets = id ? this.receivedPackets.filter(e => e.microBitId === id) : this.receivedPackets;
         if (key === '') {
             filteredPackets = [];
         } else if (key) {

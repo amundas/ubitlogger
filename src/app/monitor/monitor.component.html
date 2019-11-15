@@ -33,7 +33,8 @@
             <div class="channel-selection">
                 <span>micro:bit-ID: </span>
                 <mat-form-field style="width: 100px; margin-right: 10px;">
-                    <mat-select [(value)]="selectedId">
+                    <mat-select [(value)]="idToDownload">
+                        <mat-option value='Alle'>Alle</mat-option>
                         <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                     </mat-select>
                 </mat-form-field>
@@ -64,7 +65,7 @@
             <span>Data: </span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
                 <mat-select [(value)]="keyToPlot">
-                    <mat-option *ngFor="let key of seenKeys" [value]="key">{{key}}</mat-option>
+                    <mat-option *ngFor="let key of seenKeys[idToPlot]" [value]="key">{{key}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <span>Trekk linjer:</span>
@@ -76,7 +77,7 @@
             <mat-card-content>
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent" (click)="plotData()"
-                        [disabled]="this.receivedPackets.length === 0 || idToPlot ==='Alle' || !keyToPlot">Plott</button>
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">Plott</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>
@@ -89,7 +90,7 @@
                 <i>
                     This browser either has no support for reading serial ports, or this is not enabled.
                     Newer versions of Chrome is known to work, but you might have to enable the experimental feature by
-                    entering this in your address bar:
+                    entering this in your address bar: <br>
                     chrome://flags/#enable-experimental-web-platform-features
                 </i>
             </mat-card-content>
