@@ -23,7 +23,6 @@ export class IdentifyComponent implements OnDestroy {
             this.serialService.packetSubject.subscribe(pkt => {
                 if (this.scanning) {
                     if((this.stopOnFirst && this.first) || !this.stopOnFirst) {
-                        console.log(pkt.microBitId);
                         this.lastId = pkt.microBitId;
                         this.first = false;
                         if(this.stopOnFirst && !this.first) {
