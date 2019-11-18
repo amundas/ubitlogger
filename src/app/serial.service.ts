@@ -3,44 +3,43 @@ import { Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
+/*
+    halfway decent guide/documentaiton here https://developers.google.com/web/fundamentals/codelabs/web-serial/#use_a_transformstream_to_parse_incoming_data
+*/
 export class SerialService {
     public connected = false;
     private writer;
     private reader;
     private port;
-    private pkt = [];
     public packetSubject = new Subject<MircoBitPacket>();
-
+    private transform;
+    private inputDone;
+    private flushedGarbage = false;
     serialSupported(): boolean {
         // Could and should be navigator.serial, but I got tired of angular cli telling me that "serial does not exist on..."
         return typeof navigator['serial'] !== 'undefined';
     }
 
     handleData(val, done) {
-        this.pkt = this.pkt.concat(Array.prototype.slice.call(val));
-        // Check if we received "\n" (ASCII 10)
-        let idx = this.pkt.indexOf(10)
-        if (idx !== -1) {
-            let leftOver = this.pkt.splice(idx);
-            leftOver.shift(); // remove the newline
 
-            if (this.pkt.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
-                this.packetSubject.next(new MircoBitPacket(this.parseRawData(this.pkt)));      
-            } else {
-                console.error('Received invalid packet');
-            }
-            this.pkt = leftOver;
-        }
-        if (this.reader) {
-            this.reader.read().then((valAndDone) => this.handleData(valAndDone.value, valAndDone.done))
-            .catch(err => console.error('error while reading from port'));
+        if (done) {
+            this.reader.releaseLock();
+        } else {
+            if (this.reader) {
+                if (this.flushedGarbage) { 
+                    this.packetSubject.next(new MircoBitPacket(val));      
+                }
+                this.reader.read().then((valAndDone) => this.handleData(valAndDone.value, valAndDone.done))
+                .catch(err => console.error('error while reading from port'));
+            } 
         }
     }
 
     connect(channel: number) {
         channel = channel < 0 ? 0 : channel;
         channel = channel > 255 ? 255 : channel;
-        var options = { // not doing anything. Replace with "nofilter" or proper nrf52 filter
+        var options = { // not doing anything. Replace with "nofilter" or proper Jlink/Microbit filter
             filters: [{ vendorId: 0x1366}]
         };
         if (!this.connected) {
@@ -48,45 +47,47 @@ export class SerialService {
                 this.port = p;
                 p.open({ baudrate: 230400 }).then(() => {
                     this.connected = true;
-                    this.reader = p.readable.getReader();
-                    this.writer = p.writable.getWriter();
-                    this.writer.write(new Uint8Array([channel])).catch(err => console.error('error while writing to port'));
+                    this.transform = new RawPacketTransform();
+                    this.inputDone = p.readable.pipeThrough(this.transform);
+                    this.reader = this.transform.readable.getReader();
+                    this.setChannel(channel);
                     this.reader.read().then((valAndDone) => {this.handleData(valAndDone.value, valAndDone.done)})
-                    .catch(err => console.error('error while reading from port'));
-
-                }).catch(err => console.error('error while opening port'));
-            }).catch(err => console.error('error while requesting port'));
+                    .catch(err => console.error('Error while reading from port:', err));
+                    /*  This timeout is there to remove old data that exists in some buffer. In essence no data is accepted before 100 ms has elapsed.
+                        This is far from ideal, there should be function to flush data before we start reading in the serial API, but I can't find it */
+                    setTimeout(() => this.flushedGarbage = true, 100);
+                }).catch(err => console.error('Error while opening port:', err));
+            }).catch(err => console.error('Error while requesting port:', err));
         }
         
     }
+
     disconnect() {
-        if (this.connected) {
-            this.port.close();
-        }
-        this.reader = null;
-        this.writer = null;
-        this.connected = false;
+        this.reader.cancel().then(() => {
+            this.inputDone.cancel().then(() => {
+                    this.reader = null;
+                    this.port.writable.getWriter().close().then(() => {
+                            this.writer = null;
+                            this.port.close();
+                            this.port = null;
+                            this.connected = false;
+                    })
+                
+            })
+            
+        })
     }
 
     setChannel(channel: number) {
         channel = channel < 0 ? 0 : channel;
         channel = channel > 255 ? 255 : channel;
         if (this.connected) {
+            this.writer = this.port.writable.getWriter();
             this.writer.write(new Uint8Array([channel]));
+            this.writer.releaseLock();
         }
     }
 
-    parseRawData(raw: number[]): number[] {
-        const newArray = [];
-        let low = 0;
-        let high = 0;
-        for (let i = 0; i < raw.length; i+=2) {
-            high = raw[i] >= 65 ? raw[i] - 55 : raw[i] - 48;  // 65 is ASCII code for 'A', 48 for '0'
-            low  = raw[i+1] >= 65 ? raw[i+1] - 55 : raw[i+1] - 48;
-            newArray.push(high * 16 + low);
-        }
-        return newArray;
-    }
     getString(array: number[], start: number, end: number) {
         array.slice(start, end).map(e => String.fromCharCode(e)).join('');
     }
@@ -146,4 +147,46 @@ export class MircoBitPacket {
     public microBitId: string;
     public rssi: number;
     public key;
+}
+
+
+/* Takes in a stream of uint8_t, handles linebreaks, and outputs number arrays of correct length. 
+*/
+class RawPacketTransform extends TransformStream {
+    constructor() {
+        function parseRawData(raw: number[]): number[] {
+            const newArray = [];
+            let low = 0;
+            let high = 0;
+            for (let i = 0; i < raw.length; i+=2) {
+                high = raw[i] >= 65 ? raw[i] - 55 : raw[i] - 48;  // 65 is ASCII code for 'A', 48 for '0'
+                low  = raw[i+1] >= 65 ? raw[i+1] - 55 : raw[i+1] - 48;
+                newArray.push(high * 16 + low);
+            }
+            return newArray;
+        }
+        const transformContent = {
+            start() {
+                this.container = [];
+            },
+            async transform(chunk, controller) {
+                this.container = this.container.concat(Array.prototype.slice.call(chunk));
+                let idx = this.container.indexOf(10);
+                if (idx !== -1) {
+                    let leftOver = this.container.splice(idx);
+                    leftOver.shift(); // remove the newline
+                    if (this.container.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
+                        controller.enqueue(parseRawData(this.container));
+                    }
+                    this.container = leftOver;
+                }
+
+            },
+            flush(controller) {
+                controller.enqueue(this.container);
+            }
+        }
+        super({...transformContent})
+    }
+
 }
