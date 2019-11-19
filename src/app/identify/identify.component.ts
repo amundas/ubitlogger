@@ -18,6 +18,7 @@ export class IdentifyComponent implements OnDestroy {
     toggleConnection() {
         if (this.serialService.connected) {
             this.serialService.disconnect();
+            this.scanning = false;
         } else {
             this.serialService.connect(this.channel);
             this.serialService.packetSubject.subscribe(pkt => {
