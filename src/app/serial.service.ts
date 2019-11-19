@@ -63,19 +63,21 @@ export class SerialService {
     }
 
     disconnect() {
-        this.reader.cancel().then(() => {
-            this.inputDone.cancel().then(() => {
-                    this.reader = null;
-                    this.port.writable.getWriter().close().then(() => {
-                            this.writer = null;
-                            this.port.close();
-                            this.port = null;
-                            this.connected = false;
-                    })
+        if (this.connected)  {
+            this.reader.cancel().then(() => {
+                this.inputDone.cancel().then(() => {
+                        this.reader = null;
+                        this.port.writable.getWriter().close().then(() => {
+                                this.writer = null;
+                                this.port.close();
+                                this.port = null;
+                                this.connected = false;
+                        })
+                    
+                })
                 
             })
-            
-        })
+        }  
     }
 
     setChannel(channel: number) {
