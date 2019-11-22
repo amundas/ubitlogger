@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 
 /*
@@ -27,12 +27,12 @@ export class SerialService {
             this.reader.releaseLock();
         } else {
             if (this.reader) {
-                if (this.flushedGarbage) { 
-                    this.packetSubject.next(new MircoBitPacket(val));      
+                if (this.flushedGarbage) {
+                    this.packetSubject.next(new MircoBitPacket(val));
                 }
                 this.reader.read().then((valAndDone) => this.handleData(valAndDone.value, valAndDone.done))
-                .catch(err => console.error('error while reading from port'));
-            } 
+                    .catch(err => console.error('error while reading from port'));
+            }
         }
     }
 
@@ -47,37 +47,37 @@ export class SerialService {
                 this.port = p;
                 p.open({ baudrate: 230400 }).then(() => {
                     this.connected = true;
-                    this.transform = new RawPacketTransform();
+                    this.transform = new TransformStream(new RawPacketTransform());
                     this.inputDone = p.readable.pipeThrough(this.transform);
                     this.reader = this.transform.readable.getReader();
                     this.setChannel(channel);
                     this.reader.read().then((valAndDone) => {this.handleData(valAndDone.value, valAndDone.done)})
-                    .catch(err => console.error('Error while reading from port:', err));
+                        .catch(err => console.error('Error while reading from port:', err));
                     /*  This timeout is there to remove old data that exists in some buffer. In essence no data is accepted before 100 ms has elapsed.
                         This is far from ideal, there should be function to flush data before we start reading in the serial API, but I can't find it */
                     setTimeout(() => this.flushedGarbage = true, 100);
                 }).catch(err => console.error('Error while opening port:', err));
             }).catch(err => console.error('Error while requesting port:', err));
         }
-        
+
     }
 
     disconnect() {
         if (this.connected)  {
             this.reader.cancel().then(() => {
                 this.inputDone.cancel().then(() => {
-                        this.reader = null;
-                        this.port.writable.getWriter().close().then(() => {
-                                this.writer = null;
-                                this.port.close();
-                                this.port = null;
-                                this.connected = false;
-                        })
-                    
+                    this.reader = null;
+                    this.port.writable.getWriter().close().then(() => {
+                        this.writer = null;
+                        this.port.close();
+                        this.port = null;
+                        this.connected = false;
+                    })
+
                 })
-                
+
             })
-        }  
+        }
     }
 
     setChannel(channel: number) {
@@ -154,41 +154,38 @@ export class MircoBitPacket {
 
 /* Takes in a stream of uint8_t, handles linebreaks, and outputs number arrays of correct length. 
 */
-class RawPacketTransform extends TransformStream {
-    constructor() {
-        function parseRawData(raw: number[]): number[] {
-            const newArray = [];
-            let low = 0;
-            let high = 0;
-            for (let i = 0; i < raw.length; i+=2) {
-                high = raw[i] >= 65 ? raw[i] - 55 : raw[i] - 48;  // 65 is ASCII code for 'A', 48 for '0'
-                low  = raw[i+1] >= 65 ? raw[i+1] - 55 : raw[i+1] - 48;
-                newArray.push(high * 16 + low);
-            }
-            return newArray;
+class RawPacketTransform {
+    container;
+    parseRawData(raw: number[]): number[] {
+        const newArray = [];
+        let low = 0;
+        let high = 0;
+        for (let i = 0; i < raw.length; i += 2) {
+            high = raw[i] >= 65 ? raw[i] - 55 : raw[i] - 48;  // 65 is ASCII code for 'A', 48 for '0'
+            low = raw[i + 1] >= 65 ? raw[i + 1] - 55 : raw[i + 1] - 48;
+            newArray.push(high * 16 + low);
         }
-        const transformContent = {
-            start() {
-                this.container = [];
-            },
-            async transform(chunk, controller) {
-                this.container = this.container.concat(Array.prototype.slice.call(chunk));
-                let idx = this.container.indexOf(10);
-                if (idx !== -1) {
-                    let leftOver = this.container.splice(idx);
-                    leftOver.shift(); // remove the newline
-                    if (this.container.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
-                        controller.enqueue(parseRawData(this.container));
-                    }
-                    this.container = leftOver;
-                }
-
-            },
-            flush(controller) {
-                controller.enqueue(this.container);
-            }
-        }
-        super({...transformContent})
+        return newArray;
     }
 
+    start() {
+        this.container = [];
+    }
+
+    async transform(chunk, controller) {
+        this.container = this.container.concat(Array.prototype.slice.call(chunk));
+        let idx = this.container.indexOf(10);
+        if (idx !== -1) {
+            let leftOver = this.container.splice(idx);
+            leftOver.shift(); // remove the newline
+            if (this.container.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
+                controller.enqueue(this.parseRawData(this.container));
+            }
+            this.container = leftOver;
+        }
+
+    }
+    flush(controller) {
+        controller.enqueue(this.container);
+    }
 }
