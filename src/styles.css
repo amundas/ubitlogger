@@ -1,16 +1,21 @@
-
 app-root {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
-  
 mat-sidenav-container.mat-drawer-container {
     overflow: auto;
     flex-grow: 1;
+    height: 100%;
 }
 
-/* Menu button stays focuses when clicking link, this is a fix for that
+mat-card {
+    max-width: 70vw;
+    min-width: 60vw;
+    margin: 1em auto;
+}
+
+/* Menu button stays focused when clicking link, this is a fix for that
 ref: https://github.com/angular/components/issues/10233 */
 .mat-button-focus-overlay {
     background-color: transparent!important;
@@ -20,8 +25,12 @@ ref: https://github.com/angular/components/issues/10233 */
     background-color: rgba(247,251,252,1);
     background-image: linear-gradient(to bottom right, rgb(218, 218, 218),rgb(141, 160, 165));
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+    height: 100vh;
+}
 
 .cards-container {
     margin-top: 2em;
