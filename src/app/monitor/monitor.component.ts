@@ -1,18 +1,20 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import { saveAs } from 'file-saver';
 import { SerialService, MircoBitPacket } from '../serial.service';
-import { ChartService, ChartData } from '../chart.service';
 import { MatSnackBar } from '@angular/material';
+import { Chart } from 'chart.js';
 
 @Component({
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
   styleUrls: ['./monitor.component.css']
 })
-export class MonitorComponent implements OnInit, OnDestroy {
+export class MonitorComponent implements AfterViewInit, OnDestroy {
+    
     @ViewChild('chartCanvas', { static: false }) public chartRef;
 
-    constructor(public serialService: SerialService, public chartService: ChartService, private snackbar: MatSnackBar) {}
+    constructor(public serialService: SerialService, private snackbar: MatSnackBar) {}
+
     lastMessage: MircoBitPacket;
     supportsSerial = true;
     receivedPackets:MircoBitPacket[] = []
@@ -26,9 +28,39 @@ export class MonitorComponent implements OnInit, OnDestroy {
     keyToPlot = '';
     idToDownload = 'Alle';
     showLine = false;
+    chart: Chart;
 
-    ngOnInit() {
+    private chartOptions = {
+        type: 'scatter',
+        data: {
+            datasets: []
+        },
+        options: {
+            title: {
+                display: false,
+            },
+            legend: {
+                display: true
+            },
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                      display: true,
+                      scaleLabel: {
+                          labelString: 'Timestamp',
+                          display: true,
+                      }
+                }]
+            },
+                  
+        },
+    }
+
+    ngAfterViewInit() {
         this.supportsSerial = this.serialService.serialSupported() ? true : false;
+        if (this.supportsSerial) {
+            this.chart = new Chart(this.chartRef.nativeElement.getContext('2d'), this.chartOptions );
+        }
     }
 
     toggleConnection() {
@@ -122,8 +154,15 @@ export class MonitorComponent implements OnInit, OnDestroy {
             this.openSnackBar('For mye data for å plotte', 2000);
 
         } else if (filteredPackets.length !== 0) {
-            const data = new ChartData('#00AEFF', this.keyToPlot, filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })));
-            this.chartService.getChart([data], this.chartRef, this.showLine);
+            this.chartOptions.data.datasets = [{
+                label: this.idToPlot,
+                showLine: this.showLine,
+                data: filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })),
+                borderColor: '#00AEFF',
+                fill: false,
+                pointHitRadius: 20,
+            }];
+            this.chart.update();
         } else {
             this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', 2000);
         }
