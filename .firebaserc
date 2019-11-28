@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "microbit-ui"
+    "default": "microbit-ui",
+    "develop": "microbit-ui-develop"
   }
 }
