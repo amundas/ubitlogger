@@ -128,6 +128,7 @@ export class MircoBitPacket {
                 this.data[this.key] = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
                 break;
             case 3: // never seen it :/ Probably supposed to be "key"=string, but that is not available in makecode
+                this.key = 'Data';
                 this.data = -1;
                 break;
             case 4: // double
@@ -140,6 +141,8 @@ export class MircoBitPacket {
                 this.data[this.key] = val;
                 break;
             default:
+                this.key = 'Data';
+                this.data = -1;
                 break;
         }
     }

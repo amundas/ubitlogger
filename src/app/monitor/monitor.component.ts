@@ -28,7 +28,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
     seenIds = []
     idToPlot = '';
     keyToPlot = '';
-    idToDownload = 'Alle';
+    idToDownload = 'All';
     showLine = false;
     livePlotStarted = false;
     chart: Chart;
@@ -105,7 +105,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         const filteredPackets = this.getFilteredPackets(this.idToDownload);
         let topRow ='microbitID,Time';
         let uniqueKeys = [];
-        if (this.idToDownload === 'Alle') {
+        if (this.idToDownload === 'All') {
             this.seenIds.forEach(id => {
                 this.seenKeys[id].forEach(k => {
                     if (uniqueKeys.indexOf(k) === -1) {
@@ -125,7 +125,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         filteredPackets.map(e => {
             let rowString =   `${e.microBitId},${e.timestamp}`;
             uniqueKeys.forEach(key => {
-                rowString += `,${e.data[key] ? e.data[key] : ''}`;
+                rowString += `,${typeof e.data[key] !== 'undefined' ? e.data[key] : ''}`;
             });
             rowString += `${this.includeRSSI ? ',' + e.rssi : ''}`
             rowString += `${this.includeRawhex ? ',' + e.rawHex : ''}\n`;
@@ -138,7 +138,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         this.receivedPackets = [];
         this.seenKeys = {};
         this.seenIds = [];
-        this.idToDownload = 'Alle';
+        this.idToDownload = 'All';
         this.messageCount = 0;
     }
 
@@ -154,7 +154,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
     
     getFilteredPackets(id?: string, key?: string): MircoBitPacket[] {
         let filteredPackets = [];
-        filteredPackets = id ? this.receivedPackets.filter(e => e.microBitId === id) : this.receivedPackets;
+        filteredPackets = id !== 'All' ? this.receivedPackets.filter(e => e.microBitId === id) : this.receivedPackets;
         if (key === '') {
             filteredPackets = [];
         } else if (key) {
