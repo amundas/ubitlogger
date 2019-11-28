@@ -34,7 +34,7 @@
                 <span>micro:bit-ID: </span>
                 <mat-form-field style="width: 100px; margin-right: 10px;">
                     <mat-select [(value)]="idToDownload">
-                        <mat-option value='Alle'>Alle</mat-option>
+                        <mat-option value='All'>Alle</mat-option>
                         <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                     </mat-select>
                 </mat-form-field>
