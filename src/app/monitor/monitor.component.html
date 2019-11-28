@@ -76,8 +76,11 @@
             </div>
             <mat-card-content>
                 <mat-card-actions style="text-align: center;">
-                    <button mat-raised-button color="accent" (click)="plotData()"
-                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">Plott</button>
+                    <button mat-raised-button color="accent" (click)="plotData(false)"
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot || livePlotStarted">Plott</button>
+
+                    <button mat-raised-button color="accent" (click)="plotData(true)"
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">{{ livePlotStarted ? 'Stopp sanntid' : 'Plott i sanntid'}}</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>
