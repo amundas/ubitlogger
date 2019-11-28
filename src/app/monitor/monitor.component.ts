@@ -109,7 +109,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         filteredPackets.map(e => {
             let rowString =   `${e.microBitId},${e.timestamp}`;
             uniqueKeys.forEach(key => {
-                rowString += `,${e.data[key] ? e.data[key] : ''}`;
+                rowString += `,${typeof e.data[key] !== 'undefined' ? e.data[key] : ''}`;
             });
             rowString += `${this.includeRSSI ? ',' + e.rssi : ''}`
             rowString += `${this.includeRawhex ? ',' + e.rawHex : ''}\n`;
