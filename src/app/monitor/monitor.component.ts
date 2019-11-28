@@ -4,6 +4,8 @@ import { SerialService, MircoBitPacket } from '../serial.service';
 import { MatSnackBar } from '@angular/material';
 import { Chart } from 'chart.js';
 
+const maxPointsToPlot = 5000;
+
 @Component({
   selector: 'app-monitor',
   templateUrl: './monitor.component.html',
@@ -14,7 +16,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
     @ViewChild('chartCanvas', { static: false }) public chartRef;
 
     constructor(public serialService: SerialService, private snackbar: MatSnackBar) {}
-
+    
     lastMessage: MircoBitPacket;
     supportsSerial = true;
     receivedPackets:MircoBitPacket[] = []
@@ -28,6 +30,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
     keyToPlot = '';
     idToDownload = 'Alle';
     showLine = false;
+    livePlotStarted = false;
     chart: Chart;
 
     private chartOptions = {
@@ -41,6 +44,9 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             },
             legend: {
                 display: true
+            },
+            tooltips: {
+                enabled: true
             },
             scales: {
                 xAxes: [{
@@ -77,6 +83,16 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
                     this.seenKeys[pkt.microBitId] = [pkt.key];
                 } else if(this.seenKeys[pkt.microBitId].indexOf(pkt.key) === -1) {
                     this.seenKeys[pkt.microBitId].push(pkt.key);
+                }
+                if (this.livePlotStarted && pkt.microBitId === this.idToPlot && pkt.key === this.keyToPlot) {
+                    if (this.chartOptions.data.datasets[0].data.length > maxPointsToPlot) {
+                        this.livePlotStarted = false;
+                        this.chartOptions.options.tooltips.enabled = true;
+                        this.openSnackBar('Stoppet sanntidsplott, for mye data','Ok', 0);
+                    } else {
+                        this.chartOptions.data.datasets[0].data.push({ x: pkt.timestamp, y: pkt.data[this.keyToPlot] })
+                        this.chart.update();
+                    }
                 }
             });
         }
@@ -148,10 +164,15 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         return filteredPackets;
     }
     
-    plotData() {
+    plotData(live: boolean) {
+        if (live && this.livePlotStarted) {
+            this.livePlotStarted = false;
+            this.chartOptions.options.tooltips.enabled = true;
+            return;  
+        }
         let filteredPackets = this.getFilteredPackets(this.idToPlot, this.keyToPlot);
-        if (filteredPackets.length > 5000) { // Protects users form themselves. Plotting too much will make the browser unresponsive
-            this.openSnackBar('For mye data for å plotte', 2000);
+        if (filteredPackets.length > maxPointsToPlot) { // Protects users form themselves. Plotting too much will make the browser unresponsive
+            this.openSnackBar('For mye data for å plotte','', 2000);
 
         } else if (filteredPackets.length !== 0) {
             this.chartOptions.data.datasets = [{
@@ -162,14 +183,17 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
                 fill: false,
                 pointHitRadius: 20,
             }];
+            // Tooltips don't work well with live plotting. Disable them if live
+            this.chartOptions.options.tooltips.enabled = live ? false : true;
+            this.livePlotStarted = live;
             this.chart.update();
         } else {
-            this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', 2000);
+            this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', '', 2000);
         }
 
     }
 
-    openSnackBar(message: string, duration: number) {
-        this.snackbar.open(message, '', {duration: duration})
+    openSnackBar(message: string, action: string, duration: number) {
+        this.snackbar.open(message, action, {duration: duration})
     }
 }
