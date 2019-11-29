@@ -1,11 +1,11 @@
 <div class="cards-container">
     <mat-card>
-        <mat-card-title>Oppsett for mottaker</mat-card-title>
-        <div>For å bruke dette verktøyet må man ha en mottaker koblet til datamaskinen. Selve mottakeren kan være en micro:bit, en <a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF51-Dongle">nRF51 dongle</a>
-            , en <a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF52840-Dongle">nRF52 dongle</a> eller et <a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF52-DK">nRF52 development kit</a>. 
-            Mottakeren må programmeres, Dette gjøres ved å laste ned rett fil under, for så å programmere den på samme måte som en micro:bit.
+        <mat-card-title>{{lang.setup.receiverSetup}}</mat-card-title>
+        <div>{{lang.setup.text1}}<a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF51-Dongle">nRF51 dongle</a>
+            {{lang.setup.text2}} <a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF52840-Dongle">nRF52 dongle</a>{{lang.setup.text3}}<a href="https://www.nordicsemi.com/Software-and-Tools/Development-Kits/nRF52-DK">nRF52 development kit</a>. 
+            {{lang.setup.text4}}
         </div>
-        <span>Mottaker:</span> 
+        <span>{{lang.setup.receiver}}:</span> 
         <mat-form-field style="width: 100px; margin-right: 10px;">
             <mat-select style="margin-left: 10px;" [(value)]="selectedFile.fileName">
                     <mat-option *ngFor="let file of files" [value]="file.fileName">{{file.displayName}}</mat-option>
@@ -14,7 +14,7 @@
         <mat-card-content>
             <mat-card-actions style="text-align: center;">
                    <a href="{{'/assets/firmware/' + selectedFile.fileName}}" download #downloadAnchor></a> 
-                   <button (click)="downloadAnchor.click()" mat-raised-button color="accent">Last ned</button>
+                   <button (click)="downloadAnchor.click()" mat-raised-button color="accent">{{lang.setup.buttonDownload}}</button>
             </mat-card-actions>
         </mat-card-content>
     </mat-card>

@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { SerialService, MircoBitPacket } from '../serial.service';
 import { MatSnackBar } from '@angular/material';
 import { Chart } from 'chart.js';
+import { language, LanguageInterface } from 'src/language/language';
 
 const maxPointsToPlot = 5000;
 
@@ -14,9 +15,10 @@ const maxPointsToPlot = 5000;
 export class MonitorComponent implements AfterViewInit, OnDestroy {
     
     @ViewChild('chartCanvas', { static: false }) public chartRef;
-
-    constructor(public serialService: SerialService, private snackbar: MatSnackBar) {}
-    
+    lang: LanguageInterface;
+    constructor(public serialService: SerialService, private snackbar: MatSnackBar) {
+        this.lang = <LanguageInterface>language;
+    }
     lastMessage: MircoBitPacket;
     supportsSerial = true;
     receivedPackets:MircoBitPacket[] = []
@@ -29,7 +31,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
     idToPlot = '';
     keyToPlot = '';
     idToDownload = 'All';
-    showLine = false;
+    drawLine = false;
     livePlotStarted = false;
     chart: Chart;
 
@@ -88,7 +90,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
                     if (this.chartOptions.data.datasets[0].data.length > maxPointsToPlot) {
                         this.livePlotStarted = false;
                         this.chartOptions.options.tooltips.enabled = true;
-                        this.openSnackBar('Stoppet sanntidsplott, for mye data','Ok', 0);
+                        this.openSnackBar(this.lang.monitor.snackBarRealtimeStopped,this.lang.monitor.snackBarRealtimeStoppedAction, 0);
                     } else {
                         this.chartOptions.data.datasets[0].data.push({ x: pkt.timestamp, y: pkt.data[this.keyToPlot] })
                         this.chart.update();
@@ -103,7 +105,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         const date = new Date();
         const filename = `data_${("0" + date.getHours()).slice(-2)}${("0" + date.getMinutes()).slice(-2)}.csv`
         const filteredPackets = this.getFilteredPackets(this.idToDownload);
-        let topRow ='microbitID,Time';
+        let topRow =`${this.lang.monitor.csvKeys.id},${this.lang.monitor.csvKeys.timestamp}`;
         let uniqueKeys = [];
         if (this.idToDownload === 'All') {
             this.seenIds.forEach(id => {
@@ -119,8 +121,8 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         uniqueKeys.forEach(key => {
             topRow += `,${key}`;
         });
-        topRow += `${this.includeRSSI ? ',Signalstyrke' : ''}`;
-        topRow += `${this.includeRawhex ? ',Rådata' : ''}\n`;
+        topRow += `${this.includeRSSI ? `,${this.lang.monitor.csvKeys.rssi}` : ''}`;
+        topRow += `${this.includeRawhex ? `,${this.lang.monitor.csvKeys.rawData}` : ''}\n`;
         saveAs(new Blob([topRow, 
         filteredPackets.map(e => {
             let rowString =   `${e.microBitId},${e.timestamp}`;
@@ -172,12 +174,12 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         }
         let filteredPackets = this.getFilteredPackets(this.idToPlot, this.keyToPlot);
         if (filteredPackets.length > maxPointsToPlot) { // Protects users form themselves. Plotting too much will make the browser unresponsive
-            this.openSnackBar('For mye data for å plotte','', 2000);
+            this.openSnackBar(this.lang.monitor.snackBarTooMuchData,'', 2000);
 
         } else if (filteredPackets.length !== 0) {
             this.chartOptions.data.datasets = [{
                 label: this.idToPlot,
-                showLine: this.showLine,
+                showLine: this.drawLine,
                 data: filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })),
                 borderColor: '#00AEFF',
                 fill: false,
@@ -188,7 +190,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             this.livePlotStarted = live;
             this.chart.update();
         } else {
-            this.openSnackBar('Kombinasjonen av ID og datatype har ingen data', '', 2000);
+            this.openSnackBar(this.lang.monitor.snackBarInvalidDataID, '', 2000);
         }
 
     }

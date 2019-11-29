@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { SerialService } from '../serial.service';
-
+import { language } from 'src/language/language'
 @Component({
     selector: 'app-identify',
     templateUrl: './identify.component.html',
@@ -14,6 +14,7 @@ export class IdentifyComponent implements OnDestroy {
     stopOnFirst = true;
     scanning = false;
     first = true;
+    lang = language;
 
     toggleConnection() {
         if (this.serialService.connected) {

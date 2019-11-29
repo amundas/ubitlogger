@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { language } from 'src/language/language';
 
 @Component({
   selector: 'app-setup',
@@ -11,7 +12,6 @@ export class SetupComponent{
     {fileName: 'nRF51_dongle_firmware.hex', displayName: 'nRF51 Dongle'}];
 
     selectedFile = this.files[0];
-
-  constructor() { }
-
+    lang  = language;
+    
 }

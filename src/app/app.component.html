@@ -2,7 +2,7 @@
     <button mat-icon-button>
         <mat-icon (click)="sidenav.toggle()">{{sidenav.opened ? "arrow_back" : "menu"}}</mat-icon>
     </button>
-    <a href="/" style="text-decoration: none;color: inherit">Radiologger for micro:bit</a>
+    <a href="/" style="text-decoration: none;color: inherit">{{lang.app.title}}</a>
     <!-- This fills the remaining space of the current row -->
     <span class="fill-remaining-space"></span>
     <img width="80px" src="/assets/Kretek_logo_u.undertekst.png" alt="Kretek">
@@ -14,23 +14,23 @@
         <mat-nav-list>
             <a mat-list-item [routerLink]="'/monitor'">
                 <mat-icon mat-list-icon>usb</mat-icon>
-                <h4 mat-line>Monitor</h4>
+                <h4 mat-line>{{lang.app.menuMonitor}}</h4>
             </a>
             <a mat-list-item [routerLink]="'/identify'">
                 <mat-icon mat-list-icon>find_in_page</mat-icon>
-                <h4 mat-line>Finn ID</h4>
+                <h4 mat-line>{{lang.app.menuFindId}}</h4>
             </a>
             <a mat-list-item [routerLink]="'/example'">
                 <mat-icon mat-list-icon>assignment</mat-icon>
-                <h4 mat-line>Eksempel</h4>
+                <h4 mat-line>{{lang.app.menuExample}}</h4>
             </a>
             <a mat-list-item [routerLink]="'/setup'">
                 <mat-icon mat-list-icon>settings_remote</mat-icon>
-                <h4 mat-line>Mottakeroppsett</h4>
+                <h4 mat-line>{{lang.app.menuSetup}}</h4>
             </a>
             <a mat-list-item [routerLink]="'/info'">
                 <mat-icon mat-list-icon>info</mat-icon>
-                <h4 mat-line>Om denne siden</h4>
+                <h4 mat-line>{{lang.app.menuInfo}}</h4>
             </a>
         </mat-nav-list>
     </mat-sidenav>

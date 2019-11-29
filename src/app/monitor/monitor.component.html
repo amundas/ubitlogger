@@ -2,46 +2,46 @@
     <div *ngIf="supportsSerial;else noSerial">
 
         <mat-card>
-            <mat-card-title>Logging av data</mat-card-title>
+            <mat-card-title>{{lang.monitor.cardLogging}}</mat-card-title>
             <div class="channel-selection">
-                <span>Radiogruppe: </span>
+                <span>{{lang.monitor.radioGroup}}: </span>
                 <mat-form-field style="width: 50px;">
                     <input matInput style="text-align: right;" type="number" min="0" max="255" [(ngModel)]="channel"
                         (change)="onChannelChange()">
                 </mat-form-field>
-                <span>Motatte meldinger: {{messageCount}}</span>
+                <span>{{lang.monitor.receivedCount}}: {{messageCount}}</span>
             </div>
 
             <mat-card-content>
-                <h3>Forrige melding:</h3>
-                <div>Tidstempel: {{lastMessage ? lastMessage.timestamp : ''}}</div>
-                <div>Data: {{lastMessage ? lastMessage.key + '=' + lastMessage.data[lastMessage.key] : ''}}</div>
-                <div>Signalstyrke: {{lastMessage ? lastMessage.rssi : ''}}</div>
-                <div>micro:bit-ID: {{lastMessage ? lastMessage.microBitId : ''}}</div>
+                <h3>{{lang.monitor.lastMessage}}:</h3>
+                <div>{{lang.monitor.timestamp}}: {{lastMessage ? lastMessage.timestamp : ''}}</div>
+                <div>{{lang.monitor.messageContent}}: {{lastMessage ? lastMessage.key + '=' + lastMessage.data[lastMessage.key] : ''}}</div>
+                <div>{{lang.monitor.rssi}}: {{lastMessage ? lastMessage.rssi : ''}}</div>
+                <div>{{lang.monitor.id}}: {{lastMessage ? lastMessage.microBitId : ''}}</div>
 
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent"
-                        (click)="toggleConnection()">{{serialService.connected ? 'Koble fra' : 'Koble til'}}</button>
+                        (click)="toggleConnection()">{{serialService.connected ? lang.monitor.buttonDisconnect : lang.monitor.buttonConnect}}</button>
                     <button mat-raised-button color="accent" (click)="clearData()"
-                        [disabled]="receivedPackets.length == 0">Slett data</button>
+                        [disabled]="receivedPackets.length == 0">{{lang.monitor.buttonClearData}}</button>
                 </mat-card-actions>
             </mat-card-content>
 
         </mat-card>
         <mat-card>
-            <mat-card-title>Last ned data</mat-card-title>
+            <mat-card-title>{{lang.monitor.cardDownload}}</mat-card-title>
             <div class="channel-selection">
-                <span>micro:bit-ID: </span>
+                <span>{{lang.monitor.id}}: </span>
                 <mat-form-field style="width: 100px; margin-right: 10px;">
                     <mat-select [(value)]="idToDownload">
-                        <mat-option value='All'>Alle</mat-option>
+                        <mat-option value='All'>{{lang.monitor.all}}</mat-option>
                         <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                     </mat-select>
                 </mat-form-field>
-                <span>Inkluder rådata:</span>
+                <span>{{lang.monitor.includeRaw}}:</span>
                 <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRawhex">
                 </mat-slide-toggle>
-                <span>Inkluder Signalstyrke:</span>
+                <span>{{lang.monitor.includeRssi}}:</span>
                 <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="includeRSSI">
                 </mat-slide-toggle>
             </div>
@@ -49,27 +49,27 @@
             <mat-card-content>
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent" (click)="saveFile()"
-                        [disabled]="receivedPackets.length == 0">Lagre fil</button>
+                        [disabled]="receivedPackets.length == 0">{{lang.monitor.buttonSave}}</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>
 
         <mat-card>
-            <mat-card-title>Plotting av data</mat-card-title>
-            <span>micro:bit-ID: </span>
+            <mat-card-title>{{lang.monitor.cardPlot}}</mat-card-title>
+            <span>{{lang.monitor.idToPlot}}:</span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
                 <mat-select [(value)]="idToPlot">
                     <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <span>Data: </span>
+            <span>{{lang.monitor.keyToPlot}}:</span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
                 <mat-select [(value)]="keyToPlot">
                     <mat-option *ngFor="let key of seenKeys[idToPlot]" [value]="key">{{key}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <span>Trekk linjer:</span>
-            <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="showLine">
+            <span>{{lang.monitor.drawLine}}:</span>
+            <mat-slide-toggle style="margin-left: 10px; margin-right: 15px;" [(ngModel)]="drawLine">
             </mat-slide-toggle>
             <div style="display: block">
                 <canvas #chartCanvas></canvas>
@@ -77,10 +77,10 @@
             <mat-card-content>
                 <mat-card-actions style="text-align: center;">
                     <button mat-raised-button color="accent" (click)="plotData(false)"
-                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot || livePlotStarted">Plott</button>
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot || livePlotStarted">{{lang.monitor.buttonPlot}}</button>
 
                     <button mat-raised-button color="accent" (click)="plotData(true)"
-                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">{{ livePlotStarted ? 'Stopp sanntid' : 'Plott i sanntid'}}</button>
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">{{ livePlotStarted ? lang.monitor.buttonLiveStop : lang.monitor.buttonLivePlot}}</button>
                 </mat-card-actions>
             </mat-card-content>
         </mat-card>

@@ -1,26 +1,26 @@
 <div class="cards-container">
 
     <mat-card>
-        <mat-card-title>Finn ID på micro:bit</mat-card-title>
+        <mat-card-title>{{lang.identify.findId}}</mat-card-title>
         <div class="channel-selection">
-            <span>Radiogruppe: </span>
+            <span>{{lang.identify.radioGroup}}: </span>
             <mat-form-field style="width: 50px;">
                 <input matInput style="text-align: right;" type="number" min="0" max="255" [(ngModel)]="channel"
                     (change)="onChannelChange()">
             </mat-form-field>
-            <span>Stopp på første:</span>
+            <span>{{lang.identify.stopFirst}}:</span>
             <mat-slide-toggle [disabled]="scanning" style="margin-left: 10px; margin-right: 15px;"
                 [(ngModel)]="stopOnFirst">
             </mat-slide-toggle>
         </div>
-        <div style="font-size: 20px;">ID: {{lastId}}</div>
+        <div style="font-size: 20px;">{{lang.identify.foundId}}: {{lastId}}</div>
         <mat-progress-bar *ngIf="scanning" mode="indeterminate"></mat-progress-bar>
         <mat-card-content>
             <mat-card-actions style="text-align: center;">
                 <button mat-raised-button color="accent"
-                    (click)="toggleConnection()">{{serialService.connected ? 'Koble fra' : 'Koble til'}}</button>
+                    (click)="toggleConnection()">{{serialService.connected ? lang.identify.buttonDisconnect : lang.identify.buttonConnect}}</button>
                 <button mat-raised-button color="accent" (click)="toggleScan()"
-                    [disabled]="!(serialService.connected || scanning)">{{scanning ? 'Stopp' : 'Søk'}}</button>
+                    [disabled]="!(serialService.connected || scanning)">{{scanning ? lang.identify.buttonStopScan : lang.identify.buttonScan}}</button>
             </mat-card-actions>
         </mat-card-content>
     </mat-card>
