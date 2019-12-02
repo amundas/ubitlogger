@@ -3,7 +3,7 @@ import { saveAs } from 'file-saver';
 import { SerialService, MircoBitPacket } from '../serial.service';
 import { MatSnackBar } from '@angular/material';
 import { Chart } from 'chart.js';
-import { language, LanguageInterface } from 'src/language/language';
+import { language } from 'src/language/language';
 
 const maxPointsToPlot = 5000;
 
@@ -15,9 +15,9 @@ const maxPointsToPlot = 5000;
 export class MonitorComponent implements AfterViewInit, OnDestroy {
     
     @ViewChild('chartCanvas', { static: false }) public chartRef;
-    lang: LanguageInterface;
+    lang;
     constructor(public serialService: SerialService, private snackbar: MatSnackBar) {
-        this.lang = <LanguageInterface>language;
+        this.lang = language;
     }
     lastMessage: MircoBitPacket;
     supportsSerial = true;
