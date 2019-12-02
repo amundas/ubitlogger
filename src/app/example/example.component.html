@@ -1,65 +1,27 @@
 <div class="cards-container">
     <mat-card>
-        <mat-card-title>Eksempel, måling av løpetur</mat-card-title>
+        <mat-card-title>{{lang.example.title}}</mat-card-title>
         <mat-card-header>
-            I dette eksempelet vil vi måle bevegelsen til en person som løper. Dataene vil bli logget til denne siden,
-            slik at vi kan laste den og tegne grafer.
+            {{lang.example.text1}}
         </mat-card-header>
         <br>
         <mat-card-header>
-            Koden under får en micro:bit til å sende ut akselerasjon data 700 ganger, med omtrent 20 millisekunder
-            mellomrom. Dette vil si at den sender data i omtrent 14 sekunder. Merk at vi har spesifikt bedt micro:biten
-            om å sende serienummeret sitt. Dersom man ikke gjør dette blir IDen satt til null, og man kan ikke skille på
-            forskjellige micro:bit.
+            {{lang.example.text2}}        
         </mat-card-header>
         <br>
         <img style="width: 70%;" src="/assets/example_makecode.png" alt="Eksempelkode, makecode">
 
         <br>
         <mat-card-header>
-            Siden vi programmerte micro:biten til å sende meldinger på radiogruppe 10, må vi velge tilsvarende gruppe
-            som vist under
+            {{lang.example.text3}}
         </mat-card-header>
         <br>
-        <img style="width: 70%;" src="/assets/monitor_settings.png" alt="Instillinger, datalogging">
-
         <br>
         <mat-card-header>
-            For å koble til mottakeren må man velge korrekt port, den heter sannsynligvis noe med "JLINK" eller "SEGGER"
+            {{lang.example.text4}}
         </mat-card-header>
         <br>
-        <img src="/assets/requestport_popup.png" alt="Popup, velg port">
-
-
-        <br>
-        <mat-card-header>
-            Nå er mottakeren klar til å ta imot data fra micro:biten. Vi putter den i lomma, trykker på A-knappen og tar
-            en kjapp løpetur. Man kan følge med på dataen etter hvert som den kommer inn på hovedsiden. Under kan vi se at
-            vi har mottatt 700 meldinger, som betyr at samtlige meldinger ble korrekt mottatt. Det er ikke uvanlig at
-            noen meldinger ikke blir mottatt på grunn av dårlig signal eller andre problemer. Nederst på siden kan vi
-            velge å laste ned en liste over alle meldingene som har kommet inn. Her kan vi også filtrere på serienummer,
-            slik at vi bare får den micro:biten vi er interessert i. </mat-card-header>
-        <br>
-        <img style="width: 70%;" src="/assets/example_download_data.png" alt="Last ned data">
-
-
-        <br>
-        <mat-card-header>
-            Den nedlastede filen er i et format som heter "comma separated values". Dette kan åpnes av de fleste
-            databehandlingsprogram, for eksempel Excel eller Google Regneark. Filen kan åpnes ved å gå til Google
-            Regneark, trykke på "Fil" og så "Importer". En meny tilsvarende den under vil dukke opp.</mat-card-header>
-        <br>
-        <img style="width: 40%;" src="/assets/sheets_import.png" alt="Importer data til Google Sheets">
-
-        <br>
-        <mat-card-header>
-            Etter å ha importert dataen til regnearket, kan vi legge til en graf for å få et bedre inntrykk av dataen.
-            Dette gjøres ved å trykke på "Sett inn" og så "Figurer", her får man mulighet til å endre en del på
-            innstillingen til figuren. Grafen under er resultatet av løpeturen. Her kan vi tydelig se antall steg og
-            stegfrekvens.
-        </mat-card-header>
-        <br>
-        <img style="width: 70%;" src="/assets/data_graph.png" alt="Graf i Google Sheets">
+        <img style="width: 70%;" src="/assets/example_plot.png" alt="Last ned data">
 
     </mat-card>
 
