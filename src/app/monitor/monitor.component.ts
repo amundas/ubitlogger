@@ -170,11 +170,16 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             this.chartOptions.options.tooltips.enabled = true;
             return;  
         }
+
         let filteredPackets = this.getFilteredPackets(this.idToPlot, this.keyToPlot);
         if (filteredPackets.length > maxPointsToPlot) { // Protects users form themselves. Plotting too much will make the browser unresponsive
             this.openSnackBar('For mye data for å plotte','', 2000);
 
         } else if (filteredPackets.length !== 0) {
+            if (typeof filteredPackets[0].data[this.keyToPlot] === 'string') {
+                this.openSnackBar('Plotting av tekst støttes ikke', '', 2000);
+                return;
+            }
             this.chartOptions.data.datasets = [{
                 label: this.idToPlot,
                 showLine: this.showLine,
