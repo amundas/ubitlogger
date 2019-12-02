@@ -42,6 +42,8 @@ export interface LanguageInterface {
         buttonPlot: string,
         buttonLivePlot: string,
         buttonLiveStop: string,
+        unsupportedTitle: string,
+        unsupportedExplanation: string,
     },
     identify: {
         findId: string,
