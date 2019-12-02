@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { SerialService } from '../serial.service';
 import { language } from 'src/language/language'
 @Component({
@@ -6,7 +6,7 @@ import { language } from 'src/language/language'
     templateUrl: './identify.component.html',
     styleUrls: ['./identify.component.css']
 })
-export class IdentifyComponent implements OnDestroy {
+export class IdentifyComponent implements OnDestroy, OnInit {
 
     constructor(public serialService: SerialService) { }
     channel = 0;
@@ -15,6 +15,11 @@ export class IdentifyComponent implements OnDestroy {
     scanning = false;
     first = true;
     lang = language;
+    supportsSerial = true;
+
+    ngOnInit() {
+        this.supportsSerial = this.serialService.serialSupported() ? true : false;
+    }
 
     toggleConnection() {
         if (this.serialService.connected) {

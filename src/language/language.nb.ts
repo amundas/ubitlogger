@@ -44,6 +44,10 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plott',
         buttonLivePlot: 'Plott i sanntid',
         buttonLiveStop: 'Stopp sanntid',
+        unsupportedTitle: 'Ikke støttet',
+        unsupportedExplanation: `Denne nettleseren støtter ikke kommunikasjon med serielle porter.
+        Nye versjoner av Chrome skal fungere, men det kan hende at du må skru på denne funksjonaliteten
+        ved å lime inn dette i adressefeltet:`,
     },
     identify: {
         findId: 'Finn ID til en micro:bit',

@@ -88,12 +88,10 @@
     </div>
     <ng-template #noSerial>
         <mat-card>
-            <mat-card-title>Functionality not supported</mat-card-title>
+            <mat-card-title>{{lang.monitor.unsupportedTitle}}</mat-card-title>
             <mat-card-content>
                 <i>
-                    This browser either has no support for reading serial ports, or this is not enabled.
-                    Newer versions of Chrome is known to work, but you might have to enable the experimental feature by
-                    entering this in your address bar: <br>
+                    {{lang.monitor.unsupportedExplanation}}<br>
                     chrome://flags/#enable-experimental-web-platform-features
                 </i>
             </mat-card-content>
