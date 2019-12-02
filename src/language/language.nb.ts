@@ -21,6 +21,7 @@ export const language: LanguageInterface = {
         snackBarInvalidDataID: 'Kombinasjonen av ID og datatype har ingen data',
         snackBarRealtimeStopped: 'Stoppet sanntidsplott, for mye data',
         snackBarRealtimeStoppedAction: 'ok',
+        snackBarNoTextPlot: 'Plotting av tekst støttes ikke',
         cardLogging: 'Logging av data',
         cardDownload: 'Last ned data',
         cardPlot: 'Plotting av data',

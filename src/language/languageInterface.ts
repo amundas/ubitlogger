@@ -19,6 +19,7 @@ export interface LanguageInterface {
         snackBarInvalidDataID: string,
         snackBarRealtimeStopped: string,
         snackBarRealtimeStoppedAction: string,
+        snackBarNoTextPlot: string,
         cardLogging: string,
         cardDownload: string,
         cardPlot: string,

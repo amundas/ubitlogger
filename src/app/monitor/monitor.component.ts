@@ -179,7 +179,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
 
         } else if (filteredPackets.length !== 0) {
             if (typeof filteredPackets[0].data[this.keyToPlot] === 'string') {
-                this.openSnackBar('Plotting av tekst støttes ikke', '', 2000);
+                this.openSnackBar(this.lang.monitor.snackBarNoTextPlot, '', 2000);
                 return;
             }
             this.chartOptions.data.datasets = [{
