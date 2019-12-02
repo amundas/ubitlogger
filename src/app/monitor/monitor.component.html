@@ -58,13 +58,13 @@
             <mat-card-title>{{lang.monitor.cardPlot}}</mat-card-title>
             <span>{{lang.monitor.idToPlot}}:</span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
-                <mat-select [(value)]="idToPlot">
+                <mat-select [disabled]="livePlotStarted" [(value)]="idToPlot">
                     <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <span>{{lang.monitor.keyToPlot}}:</span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
-                <mat-select [(value)]="keyToPlot">
+                <mat-select [disabled]="livePlotStarted" [(value)]="keyToPlot">
                     <mat-option *ngFor="let key of seenKeys[idToPlot]" [value]="key">{{key}}</mat-option>
                 </mat-select>
             </mat-form-field>
