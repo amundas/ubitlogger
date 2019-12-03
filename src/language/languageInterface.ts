@@ -70,5 +70,23 @@ export interface LanguageInterface {
         text2: string,
         text3: string,
         text4: string,
+    },
+    info: {
+        card1Title: string,
+        card1Title2: string,
+        card1Text1: string,
+        card1Title3: string,
+        card1Text2: string,
+        card2Title: string,
+        card2Title2: string,
+        card2Text1: string,
+        card2Title3: string,
+        card2Text2: string,
+        card2Title4: string,
+        card2Text3: string,
+        card3Title: string,
+        card3Text1: string,
+        card3Text2: string,
+        here: string,
     }
 }

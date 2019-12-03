@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { IdentifyComponent } from './identify/identify.component';
 import { SetupComponent } from './setup/setup.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     MonitorComponent,
     IdentifyComponent,
     SetupComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    InfoComponent
   ],
   imports: [
     BrowserModule,

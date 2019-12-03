@@ -7,7 +7,7 @@ export const language: LanguageInterface = {
         menuFindId: 'Find ID',
         menuExample: 'Example',
         menuSetup: 'Receiver setup',
-        menuInfo: 'About this page'
+        menuInfo: 'Help and information'
     },
     monitor: {
         csvKeys: {
@@ -18,7 +18,7 @@ export const language: LanguageInterface = {
         },
         all: 'All',
         snackBarTooMuchData: 'Too much data to plot',
-        snackBarInvalidDataID: 'The combination of ID and datatype has no registered data',
+        snackBarInvalidDataID: 'The combination of ID and data type has no registered data',
         snackBarRealtimeStopped: 'Stopped real time plot, too much data',
         snackBarRealtimeStoppedAction: 'ok',
         snackBarNoTextPlot: 'Plotting of text is not supported',
@@ -72,7 +72,7 @@ export const language: LanguageInterface = {
         title: 'Example: Measuring acceleration',
         text1: `In this example we will measure the acceleration of a micro:bit.
         This tool requires that a device that can receive micro:bit messages is configured and connected to the PC. If you have not done that already, go to "receiver setup" in the menu and program the receiver.`,
-        text2: `We program a micro:bit with the code shown below. This code makes the micro:bit send acceleration data 1000 times, with about 20 milliseconds between each packet. Note that we have specified that the micro:bit should send it's serial number. If we don't do this, the serial number is set to all zeros, and we can't tell different micro:bits apart.`,
+        text2: `We program a micro:bit with the code shown below. This code makes the micro:bit send acceleration data 1000 times, with about 20 milliseconds between each packet. Note that we have specified that the micro:bit should send its serial number. If we don't do this, the serial number is set to all zeros, and we can't tell different micro:bits apart.`,
         text3: `After clicking the connect button, you should see a list of connected devices. 
         If you are using a micro:bit as the receiver it will be called "BBC_micro:bit" or "USB Serial Device", depending on your operating system. If you are using one of the other options the name will include "J-link".
         Select the correct input and continue.`,
@@ -80,5 +80,23 @@ export const language: LanguageInterface = {
         Now the tool is ready to receive messages from the micro:bit. When the "A" button is pressed, the data should start coming in.
         The received data can be plotted directly in the tool. The graph below is the result of rotating the micro:bit slowly while it was sending data.
         The received data can also be downloaded in csv format, which can be directly imported into a number of programs like Excel and Google Sheets.`,
+    },
+    info: {
+        card1Title: 'Troubleshooting',
+        card1Title2: 'Unable to connect to a micro:bit configured as a receiver',
+        card1Text1: 'This can mean that the firmware of your micro:bit needs to be updated. Use this guide to upgrade: ',
+        card1Title3: 'Only a fraction of the sent messages are received',
+        card1Text2: `It is normal that a few percent of the messages sent by the micro:bit is lost. If you are experiencing many lost messages it can mean that you are sending too fast (e.g no delay between sent messages), or that the micro:bit is out of the receiver's range`,
+        card2Title: 'Message format',
+        card2Title2: 'Timestamp',
+        card2Text1: 'The timestamp represents the time in milliseconds since the micro:bit was powered on.',
+        card2Title3: 'Signal strength',
+        card2Text2: 'The signal strength is the so called RSSI (Received Signal Strength Indicator) reported by the receiver. This will normally be a negative value between -40 and -100. More negative values means lower signal strength. Apart from being useful to check the signal strength, this value can to some extent be used for estimating the distance between the receiver and the transmitter. A starting point for distance measuring can be found',
+        card2Title4: 'Raw data',
+        card2Text3: 'The raw data can be downloaded as a series of hexadecimal numbers, this contains all the data sent by the transmitter. More information of the format can be found in the source code of this project, and ',
+        card3Title: 'About this project',
+        card3Text1: 'This project is created by the IoT-lab at the Norwegian University of Science and Technology. It is intended as a helpful tool for educational purposes. The source code is available at ',
+        card3Text2: 'licencsed under the XX license. Inquiries can be sent to ',
+        here: 'here',
     }
 }
