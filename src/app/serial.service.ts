@@ -31,7 +31,7 @@ export class SerialService {
                     this.packetSubject.next(new MircoBitPacket(val));
                 }
                 this.reader.read().then((valAndDone) => this.handleData(valAndDone.value, valAndDone.done))
-                    .catch(err => console.error('error while reading from port'));
+                    .catch(err => this.handleReadError(err));
             }
         }
     }
@@ -52,7 +52,7 @@ export class SerialService {
                     this.reader = this.transform.readable.getReader();
                     this.setChannel(channel);
                     this.reader.read().then((valAndDone) => {this.handleData(valAndDone.value, valAndDone.done)})
-                        .catch(err => console.error('Error while reading from port:', err));
+                        .catch(err => this.handleReadError(err));
                     /*  This timeout is there to remove old data that exists in some buffer. In essence no data is accepted before 100 ms has elapsed.
                         This is far from ideal, there should be function to flush data before we start reading in the serial API, but I can't find it */
                     setTimeout(() => this.flushedGarbage = true, 100);
@@ -60,6 +60,13 @@ export class SerialService {
             }).catch(err => console.error('Error while requesting port:', err));
         }
 
+    }
+
+    handleReadError(err: Error) {
+        if (err.name === 'NetworkError') { // Should trigger when user disconnects the receiver
+            this.connected = false;
+        }
+        console.error('Error while reading from port:', err)
     }
 
     disconnect() {
@@ -107,7 +114,7 @@ function toPaddedHexString(num, len) {
 
 export class MircoBitPacket {
     constructor (rawData: number[]) {
-        this.rawHex = rawData.slice(0, rawData.length-1).map(e => toPaddedHexString(e, 2)).join('');
+        this.rawHex = rawData.slice(0, rawData.length-1).map(e => toPaddedHexString(e, 2)).join(''); // removes RSSI and creates string
         this.rssi = rawData[rawData.length-1] * -1;
         this.microBitId = this.rawHex.slice(16, 24);
         this.timestamp = convertTypedArray(new Uint8Array(rawData.slice(4, 8)), Uint32Array)[0];
