@@ -39,3 +39,8 @@ body {
     align-items: center;
     flex-direction: column;
 }
+
+.card-title2 {
+    font-size: 18px;
+    font-weight: 450;
+}
