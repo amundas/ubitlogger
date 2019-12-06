@@ -142,6 +142,8 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         this.seenIds = [];
         this.idToDownload = 'All';
         this.messageCount = 0;
+        this.chartOptions.data.datasets[0].data = [];
+        this.chart.update();
     }
 
     onChannelChange() {
