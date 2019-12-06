@@ -65,6 +65,8 @@ export class SerialService {
     handleReadError(err: Error) {
         if (err.name === 'NetworkError') { // Should trigger when user disconnects the receiver
             this.connected = false;
+            this.packetSubject.complete();
+            this.flushedGarbage = false;
             this.packetSubject = new Subject<MircoBitPacket>();
         }
         console.error('Error while reading from port:', err)
@@ -72,6 +74,7 @@ export class SerialService {
 
     disconnect() {
         if (this.connected)  {
+            this.packetSubject.complete();
             this.packetSubject = new Subject<MircoBitPacket>();
             this.reader.cancel().then(() => {
                 this.inputDone.cancel().then(() => {
@@ -81,10 +84,9 @@ export class SerialService {
                         this.port.close();
                         this.port = null;
                         this.connected = false;
+                        this.flushedGarbage = false;
                     })
-
                 })
-
             })
         }
     }
