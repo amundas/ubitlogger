@@ -65,6 +65,8 @@ export const language: LanguageInterface = {
         text2: ', a ',
         text3: ' or a ',
         text4: 'The receiver needs to be programmed with the correct code. This is done by downloading the file corresponding to your receiver below, and then programming your receiver in the same way that you would program your micro:bit.',
+        text5: 'If you are using an nRF52 dongle as a receiver, it needs to be programmed in a slightly different way: Download',
+        text6: ', start the program and select the programmer tool. Plug inn the dongle and press its reset button, then write the hex file to the dongle. After reconnecting the dongle, it should be discoverable as "uBit Receiver" on the monitor page.',
         receiver: 'Receiver',
         buttonDownload: 'Download',
     },

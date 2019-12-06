@@ -65,6 +65,8 @@ export const language: LanguageInterface = {
         text2: ', en ',
         text3: ' eller et ',
         text4: 'Mottakeren må programmeres, Dette gjøres ved å laste ned rett fil under, for så å programmere den på samme måte som en micro:bit.',
+        text5: 'Dersom du bruker en nRF52 dongle som mottaker, må den programmeres på en litt annerledes måte: Last ned',
+        text6: ', start programmet og velg "Programmer". Sett donglen i PCen og trykk på reset-knappen dens, skriv så hex-filen til donglen. Etter å ha koblet donglen fra og til igjen, skal den kunne oppdages som "uBit Receiver".',
         receiver: 'Mottaker',
         buttonDownload: 'Last ned',
     },
