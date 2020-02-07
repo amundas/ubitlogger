@@ -57,6 +57,22 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "en": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/language/language.ts",
+                    "with": "src/language/language.en.ts"
+                  }
+                ]
+            },
+            "nb": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/language/language.ts",
+                    "with": "src/language/language.nb.ts"
+                  }
+                ]
             }
           }
         },
@@ -68,6 +84,12 @@
           "configurations": {
             "production": {
               "browserTarget": "microbit-ui:build:production"
+            },
+            "en": {
+                "browserTarget": "microbit-ui:build:en"
+            },
+            "nb": {
+                "browserTarget": "microbit-ui:build:nb"
             }
           }
         },
