@@ -44,10 +44,10 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plot',
         buttonLivePlot: 'Plot in real time',
         buttonLiveStop: 'Stop real time plot',
-        unsupportedTitle: 'Functionality not supported',
+        unsupportedTitle: 'Functionality needs to be enabled',
         unsupportedExplanation: `This browser either has no support for reading serial ports, or this is not enabled.
-        Newer versions of Chrome is known to work, but you might have to enable the experimental feature by
-        entering this in your address bar:`,
+        Newer versions of Chrome, or Chromium based browsers support this feature. You might have to enable the feature by
+        entering this in your address bar and select "enabled":`,
     },
     identify: {
         findId: 'Find the ID of a micro:bit',
