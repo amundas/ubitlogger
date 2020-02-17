@@ -44,10 +44,10 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plot',
         buttonLivePlot: 'Plot in real time',
         buttonLiveStop: 'Stop real time plot',
-        unsupportedTitle: 'Functionality not supported',
+        unsupportedTitle: 'Functionality needs to be enabled',
         unsupportedExplanation: `This browser either has no support for reading serial ports, or this is not enabled.
-        Newer versions of Chrome is known to work, but you might have to enable the experimental feature by
-        entering this in your address bar:`,
+        Newer versions of Chrome, or Chromium based browsers support this feature. You might have to enable the feature by
+        entering this in your address bar and select "enabled":`,
     },
     identify: {
         findId: 'Find the ID of a micro:bit',
@@ -65,6 +65,8 @@ export const language: LanguageInterface = {
         text2: ', a ',
         text3: ' or a ',
         text4: 'The receiver needs to be programmed with the correct code. This is done by downloading the file corresponding to your receiver below, and then programming your receiver in the same way that you would program your micro:bit.',
+        text5: 'If you are using an nRF52 dongle as a receiver, it needs to be programmed in a slightly different way: Download',
+        text6: ', start the program and select the programmer tool. Plug inn the dongle and press its reset button, then write the hex file to the dongle. After reconnecting the dongle, it should be discoverable as "uBit Receiver" on the monitor page.',
         receiver: 'Receiver',
         buttonDownload: 'Download',
     },
@@ -80,6 +82,11 @@ export const language: LanguageInterface = {
         Now the tool is ready to receive messages from the micro:bit. When the "A" button is pressed, the data should start coming in.
         The received data can be plotted directly in the tool. The graph below is the result of rotating the micro:bit slowly while it was sending data.
         The received data can also be downloaded in csv format, which can be directly imported into a number of programs like Excel and Google Sheets.`,
+        titlePython: 'MicroPython example',
+        text1Python: 'A MicroPython example can be found',
+        here: 'here',
+        text2Python: 'This example flashes a random LED and sends accelerometer data.',
+
     },
     info: {
         card1Title: 'Troubleshooting',

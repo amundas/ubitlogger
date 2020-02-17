@@ -1,10 +1,7 @@
 import {language as defaultLang} from './language.en';
 import {LanguageInterface} from './languageInterface'
-/*  TODO:
-    When angular-cli 9 is released, one should be able to use multiple configurations when building a project.
-    The idea with building for different languages, is that it should be done something like this:
-    ng build --prod --configuration=en
-    Here both the production and english configuration will be used. In angular.json, file replacements should be set up so that language.ts is 
-    replaced with the correct language file
+/* Depending on the configuration, this file will be replaced with the correct file during build.
+   This leads to smaller bundle sizes, and changing language on the fly is not really that important.
+   Instead each language should be hosted on a subdomain (e.g en.ubitlogger.com).
 */
 export const language = <LanguageInterface>defaultLang;

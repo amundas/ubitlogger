@@ -44,10 +44,10 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plott',
         buttonLivePlot: 'Plott i sanntid',
         buttonLiveStop: 'Stopp sanntid',
-        unsupportedTitle: 'Ikke støttet',
+        unsupportedTitle: 'En instilling i nettleseren må endres',
         unsupportedExplanation: `Denne nettleseren støtter ikke kommunikasjon med serielle porter.
-        Nye versjoner av Chrome skal fungere, men det kan hende at du må skru på denne funksjonaliteten
-        ved å lime inn dette i adressefeltet:`,
+        Nye versjoner av Chrome, eller Chromium-baserte nettlesere fungerer. Det kan hende at du må skru på denne funksjonaliteten
+        ved å lime inn dette i adressefeltet og velge "enabled":`,
     },
     identify: {
         findId: 'Finn IDen til en micro:bit',
@@ -65,6 +65,8 @@ export const language: LanguageInterface = {
         text2: ', en ',
         text3: ' eller et ',
         text4: 'Mottakeren må programmeres, Dette gjøres ved å laste ned rett fil under, for så å programmere den på samme måte som en micro:bit.',
+        text5: 'Dersom du bruker en nRF52 dongle som mottaker, må den programmeres på en litt annerledes måte: Last ned',
+        text6: ', start programmet og velg "Programmer". Sett donglen i PCen og trykk på reset-knappen dens, skriv så hex-filen til donglen. Etter å ha koblet donglen fra og til igjen, skal den kunne oppdages som "uBit Receiver".',
         receiver: 'Mottaker',
         buttonDownload: 'Last ned',
     },
@@ -80,6 +82,10 @@ export const language: LanguageInterface = {
         Nå er vi klar for å motta data. Når knappen merket "A" på micro:biten trykkes begynner den å sende data, og det skal dukke opp i dette verktøyet.
         Vi kan plotte data direkte i dette verktøyet. Grafen under viser resulterende data etter at micro:biten ble rotert sakte mens den sendte data.
         Mottatt data kan også lastes ned i csv-format, disse filene kan importeres direkte i regneark for videre behandling.`,
+        titlePython: 'MicroPython eksempel',
+        text1Python: 'Ett eksempel for MicroPython finnes',
+        here: 'her',
+        text2Python: 'Dette eksempelet blinker en tilfeldig LED og sender akselerometerdata.',
     },
     info: {
         card1Title: 'Feilsøking',

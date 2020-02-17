@@ -13,12 +13,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "public/",
+            "outputPath": "firebase/public/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -42,7 +42,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -58,6 +57,22 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "en": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/language/language.ts",
+                    "with": "src/language/language.en.ts"
+                  }
+                ]
+            },
+            "nb": {
+                "fileReplacements": [
+                  {
+                    "replace": "src/language/language.ts",
+                    "with": "src/language/language.nb.ts"
+                  }
+                ]
             }
           }
         },
@@ -69,6 +84,12 @@
           "configurations": {
             "production": {
               "browserTarget": "microbit-ui:build:production"
+            },
+            "en": {
+                "browserTarget": "microbit-ui:build:en"
+            },
+            "nb": {
+                "browserTarget": "microbit-ui:build:nb"
             }
           }
         },
