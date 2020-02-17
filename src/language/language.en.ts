@@ -82,6 +82,11 @@ export const language: LanguageInterface = {
         Now the tool is ready to receive messages from the micro:bit. When the "A" button is pressed, the data should start coming in.
         The received data can be plotted directly in the tool. The graph below is the result of rotating the micro:bit slowly while it was sending data.
         The received data can also be downloaded in csv format, which can be directly imported into a number of programs like Excel and Google Sheets.`,
+        titlePython: 'MicroPython example',
+        text1Python: 'A MicroPython example can be found',
+        here: 'here',
+        text2Python: 'This example flashes a random LED and sends accelerometer data.',
+
     },
     info: {
         card1Title: 'Troubleshooting',

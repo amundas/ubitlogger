@@ -82,6 +82,10 @@ export const language: LanguageInterface = {
         Nå er vi klar for å motta data. Når knappen merket "A" på micro:biten trykkes begynner den å sende data, og det skal dukke opp i dette verktøyet.
         Vi kan plotte data direkte i dette verktøyet. Grafen under viser resulterende data etter at micro:biten ble rotert sakte mens den sendte data.
         Mottatt data kan også lastes ned i csv-format, disse filene kan importeres direkte i regneark for videre behandling.`,
+        titlePython: 'MicroPython eksempel',
+        text1Python: 'Ett eksempel for MicroPython finnes',
+        here: 'her',
+        text2Python: 'Dette eksempelet blinker en tilfeldig LED og sender akselerometerdata.',
     },
     info: {
         card1Title: 'Feilsøking',
