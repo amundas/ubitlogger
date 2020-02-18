@@ -65,7 +65,8 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
                  
                     },
                     ticks: {
-                        maxTicksLimit: 20
+                        maxTicksLimit: 20,
+                        sampleSize: 1,
                     }
                 }]
             },
