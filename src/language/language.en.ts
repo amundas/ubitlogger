@@ -15,6 +15,7 @@ export const language: LanguageInterface = {
             timestamp: 'Time',
             rssi: 'Signal strength',
             rawData: 'Raw data',
+            utcTimestamp: 'Epoch Time'
         },
         all: 'All',
         snackBarTooMuchData: 'Too much data to plot',

@@ -52,12 +52,21 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             },
             scales: {
                 xAxes: [{
-                    type: 'linear',
-                      display: true,
-                      scaleLabel: {
-                          labelString: 'Timestamp',
-                          display: true,
-                      }
+                    type: 'time',
+                    display: true,
+                    time: {
+                      displayFormats: {
+                          millisecond: 'HH:mm:ss',
+                          second: 'HH:mm:ss',
+                          minute: 'HH:mm:ss',
+                          hour: 'HH:mm',
+                          day: 'HH:mm',
+                        },
+                 
+                    },
+                    ticks: {
+                        maxTicksLimit: 20
+                    }
                 }]
             },
                   
@@ -92,7 +101,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
                         this.chartOptions.options.tooltips.enabled = true;
                         this.openSnackBar(this.lang.monitor.snackBarRealtimeStopped,this.lang.monitor.snackBarRealtimeStoppedAction, 0);
                     } else {
-                        this.chartOptions.data.datasets[0].data.push({ x: pkt.timestamp, y: pkt.data[this.keyToPlot] })
+                        this.chartOptions.data.datasets[0].data.push({ x: pkt.utcTimestamp, y: pkt.data[this.keyToPlot] })
                         this.chart.update();
                     }
                 }
@@ -105,7 +114,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         const date = new Date();
         const filename = `data_${("0" + date.getHours()).slice(-2)}${("0" + date.getMinutes()).slice(-2)}.csv`
         const filteredPackets = this.getFilteredPackets(this.idToDownload);
-        let topRow =`${this.lang.monitor.csvKeys.id},${this.lang.monitor.csvKeys.timestamp}`;
+        let topRow =`${this.lang.monitor.csvKeys.id},${this.lang.monitor.csvKeys.timestamp},${this.lang.monitor.csvKeys.utcTimestamp}`;
         let uniqueKeys = [];
         if (this.idToDownload === 'All') {
             this.seenIds.forEach(id => {
@@ -125,7 +134,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
         topRow += `${this.includeRawhex ? `,${this.lang.monitor.csvKeys.rawData}` : ''}\n`;
         saveAs(new Blob([topRow, 
         filteredPackets.map(e => {
-            let rowString =   `${e.microBitId},${e.timestamp}`;
+            let rowString =   `${e.microBitId},${e.timestamp},${e.utcTimestamp}`;
             uniqueKeys.forEach(key => {
                 rowString += `,${typeof e.data[key] !== 'undefined' ? e.data[key] : ''}`;
             });
@@ -187,7 +196,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             this.chartOptions.data.datasets = [{
                 label: this.idToPlot,
                 showLine: this.drawLine,
-                data: filteredPackets.map(element => ({ x: element.timestamp, y: element.data[this.keyToPlot] })),
+                data: filteredPackets.map(element => ({ x: element.utcTimestamp, y: element.data[this.keyToPlot] })),
                 borderColor: '#00AEFF',
                 fill: false,
                 pointHitRadius: 20,

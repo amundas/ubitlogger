@@ -15,6 +15,7 @@ export const language: LanguageInterface = {
             timestamp: 'Tid',
             rssi: 'Signalstyrke',
             rawData: 'Rådata',
+            utcTimestamp: 'Epochtid'
         },
         all: 'Alle',
         snackBarTooMuchData: 'For mye data for å plotte',
