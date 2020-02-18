@@ -15,6 +15,7 @@ export const language: LanguageInterface = {
             timestamp: 'Tid',
             rssi: 'Signalstyrke',
             rawData: 'Rådata',
+            utcTimestamp: 'Epochtid'
         },
         all: 'Alle',
         snackBarTooMuchData: 'For mye data for å plotte',
@@ -95,7 +96,7 @@ export const language: LanguageInterface = {
         card1Text2: `Det er normalt at noen få prosent av meldingene ikke kommer fram. Dersom du opplever at mange meldinger forsvinner kan det være at meldingene blir sendt for raskt, uten pause mellom hver melding. Det kan også være at micro:biten er utenfor rekkevidden til mottakeren`,
         card2Title: 'Meldingsformat',
         card2Title2: 'Tidsstempel',
-        card2Text1: 'Tidsstempelet viser antall millisekunder siden en micro:bit ble skrudd på.',
+        card2Text1: 'Tidsstempelet viser antall millisekunder siden en micro:bit ble skrudd på. I nedlastede .csv-filer vil du også finne Epoch-tid, som er tiden rapportert av PCen din da meldingen ble mottatt.',
         card2Title3: 'Signalstyrke',
         card2Text2: 'Signalstyrken er RSSI (Received Signal Strength Indicator) rapportert av mottakeren. Denne verdien ligger normalt mellom -40 og -100, lavere verdier betyr dårligere signalstyrke. Denne verdien kan til en viss grad bli brukt til å estimere avstand mellom sender og mottaker, mer informasjon om dette finnes ',
         card2Title4: 'Rådata',

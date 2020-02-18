@@ -15,6 +15,7 @@ export const language: LanguageInterface = {
             timestamp: 'Time',
             rssi: 'Signal strength',
             rawData: 'Raw data',
+            utcTimestamp: 'Epoch Time'
         },
         all: 'All',
         snackBarTooMuchData: 'Too much data to plot',
@@ -96,7 +97,7 @@ export const language: LanguageInterface = {
         card1Text2: `It is normal that a few percent of the messages sent by the micro:bit is lost. If you are experiencing many lost messages it can mean that you are sending too fast (e.g no delay between sent messages), or that the micro:bit is out of the receiver's range`,
         card2Title: 'Message format',
         card2Title2: 'Timestamp',
-        card2Text1: 'The timestamp represents the time in milliseconds since the micro:bit was powered on.',
+        card2Text1: 'The timestamp represents the time in milliseconds since the micro:bit was powered on. In downloaded .csv files you will also find the epoch time, which is the time reported by your computer when the message was received. You can find more about what this value means online.',
         card2Title3: 'Signal strength',
         card2Text2: 'The signal strength is the so called RSSI (Received Signal Strength Indicator) reported by the receiver. This will normally be a negative value between -40 and -100. More negative values means lower signal strength. Apart from being useful to check the signal strength, this value can to some extent be used for estimating the distance between the receiver and the transmitter. A starting point for distance measuring can be found',
         card2Title4: 'Raw data',

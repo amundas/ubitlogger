@@ -122,6 +122,7 @@ export class MircoBitPacket {
         this.rssi = rawData[rawData.length-1] * -1;
         this.microBitId = this.rawHex.slice(16, 24);
         this.timestamp = convertTypedArray(new Uint8Array(rawData.slice(4, 8)), Uint32Array)[0];
+        this.utcTimestamp = new Date().getTime();
         this.data = {};
         // rawData[3] contains a number specifying the type of the packet
         switch(rawData[3]) {
@@ -159,6 +160,7 @@ export class MircoBitPacket {
     }
     public rawHex: string;
     public timestamp: number; // milliseconds since microbit started
+    public utcTimestamp: number;
     public data: any;
     public microBitId: string;
     public rssi: number;

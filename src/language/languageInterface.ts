@@ -13,6 +13,7 @@ export interface LanguageInterface {
             timestamp: string,
             rssi: string,
             rawData: string,
+            utcTimestamp: string,
         },
         all: string,
         snackBarTooMuchData: string,
