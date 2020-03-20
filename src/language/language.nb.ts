@@ -45,6 +45,7 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plott',
         buttonLivePlot: 'Plott i sanntid',
         buttonLiveStop: 'Stopp sanntid',
+        buttonClearPlot: 'Tøm plott',
         unsupportedTitle: 'En instilling i nettleseren må endres',
         unsupportedExplanation: `Denne nettleseren støtter ikke kommunikasjon med serielle porter.
         Nye versjoner av Chrome, eller Chromium-baserte nettlesere fungerer. Det kan hende at du må skru på denne funksjonaliteten

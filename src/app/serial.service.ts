@@ -123,21 +123,21 @@ export class MircoBitPacket {
         this.microBitId = this.rawHex.slice(16, 24);
         this.timestamp = convertTypedArray(new Uint8Array(rawData.slice(4, 8)), Uint32Array)[0];
         this.utcTimestamp = new Date().getTime();
-        this.data = {};
+        this.type = rawData[3];
         // rawData[3] contains a number specifying the type of the packet
-        switch(rawData[3]) {
+        switch(this.type) {
             case 0: // int32
                 this.key = 'Data';
-                this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
+                this.data = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
                 break;
             case 1: // "key" = int32. Key length specified in rawData[16]
                 this.key = 'Data_' + rawData.slice(17, 17 + rawData[16]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 4)), Int32Array)[0];
-                this.data[this.key] = val;
+                this.data= val;
                 break;
             case 2: // string, length specified in rawData[12]
                 this.key = 'Data';
-                this.data[this.key] = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
+                this.data = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
                 break;
             case 3: // never seen it :/ Probably supposed to be "key"=string, but that is not available in makecode
                 this.key = 'Data';
@@ -145,12 +145,12 @@ export class MircoBitPacket {
                 break;
             case 4: // double
                 this.key = 'Data';
-                this.data[this.key] = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
+                this.data = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
                 break;
             case 5: // "key"=double. Key length specified in rawData[20]
                 this.key = 'Data_' + rawData.slice(21, 21 + rawData[20]).map(e => String.fromCharCode(e)).join('');
                 var val = convertTypedArray(new Uint8Array(rawData.slice(12, 12 + 8)), Float64Array)[0];
-                this.data[this.key] = val;
+                this.data = val;
                 break;
             default:
                 this.key = 'Data';
@@ -165,6 +165,7 @@ export class MircoBitPacket {
     public microBitId: string;
     public rssi: number;
     public key;
+    public type: number;
 }
 
 
@@ -194,8 +195,12 @@ class RawPacketTransform {
         if (idx !== -1) {
             let leftOver = this.container.splice(idx);
             leftOver.shift(); // remove the newline
-            if (this.container.length === 72) { // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
+            // Crude check of validity. Microbit sends 35 bytes, I added rssi at the end. Receiver prints every byte as two characters -> 72
+            // Also check if the standard micro:bit header is present
+            if (this.container.length === 72 && [48, 49, 48, 48, 48, 49].reduce((a, v, i) => (this.container[i] === v && a), true)) { 
                 controller.enqueue(this.parseRawData(this.container));
+            } else {
+                console.log('discarded packet', this.container);
             }
             this.container = leftOver;
         }
