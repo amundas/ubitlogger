@@ -39,8 +39,9 @@ export class SerialService {
     connect(channel: number) {
         channel = channel < 0 ? 0 : channel;
         channel = channel > 255 ? 255 : channel;
-        var options = { // not doing anything. Replace with "nofilter" or proper Jlink/Microbit filter
-            filters: [{ vendorId: 0x1366}]
+        var options = {
+        // vendors: 0x0d28 - ARM (Microbit), 0x1915 - Nordic (nrf52 dongle), 0x1366 - SEGGER (devkit and nrf51 dongle) 
+            filters: [{ usbVendorId: 0x0d28}, {usbVendorId: 0x1915}, { usbVendorId: 0x1366}]
         };
         if (!this.connected) {
             navigator['serial'].requestPort(options).then((p) => {
