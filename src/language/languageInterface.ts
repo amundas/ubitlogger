@@ -43,6 +43,7 @@ export interface LanguageInterface {
         buttonPlot: string,
         buttonLivePlot: string,
         buttonLiveStop: string,
+        buttonClearPlot: string,
         unsupportedTitle: string,
         unsupportedExplanation: string,
     },

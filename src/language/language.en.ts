@@ -45,6 +45,7 @@ export const language: LanguageInterface = {
         buttonPlot: 'Plot',
         buttonLivePlot: 'Plot in real time',
         buttonLiveStop: 'Stop real time plot',
+        buttonClearPlot: 'Clear plot',
         unsupportedTitle: 'Functionality needs to be enabled',
         unsupportedExplanation: `This browser either has no support for reading serial ports, or this is not enabled.
         Newer versions of Chrome, or Chromium based browsers support this feature. You might have to enable the feature by

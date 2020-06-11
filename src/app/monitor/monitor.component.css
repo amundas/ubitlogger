@@ -5,3 +5,15 @@
     align-content: center;
     align-items: center;
 }
+
+.plot-buttons {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+}
+
+.plot-button {
+    margin: 4px;
+}

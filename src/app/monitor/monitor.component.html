@@ -15,7 +15,7 @@
             <mat-card-content>
                 <h3>{{lang.monitor.lastMessage}}:</h3>
                 <div>{{lang.monitor.timestamp}}: {{lastMessage ? lastMessage.timestamp : ''}}</div>
-                <div>{{lang.monitor.messageContent}}: {{lastMessage ? lastMessage.key + '=' + lastMessage.data[lastMessage.key] : ''}}</div>
+                <div>{{lang.monitor.messageContent}}: {{lastMessage ? lastMessage.key + '=' + lastMessage.data : ''}}</div>
                 <div>{{lang.monitor.rssi}}: {{lastMessage ? lastMessage.rssi : ''}}</div>
                 <div>{{lang.monitor.id}}: {{lastMessage ? lastMessage.microBitId : ''}}</div>
 
@@ -59,12 +59,13 @@
             <span>{{lang.monitor.idToPlot}}: </span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
                 <mat-select [disabled]="livePlotStarted" [(value)]="idToPlot">
+                    <mat-option value='All'>{{lang.monitor.all}}</mat-option>
                     <mat-option *ngFor="let id of seenIds" [value]="id">{{id}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <span>{{lang.monitor.keyToPlot}}: </span>
             <mat-form-field style="width: 100px; margin-right: 10px;">
-                <mat-select [disabled]="livePlotStarted" [(value)]="keyToPlot">
+                <mat-select [disabled]="livePlotStarted || idToPlot==='All'" [(value)]="keyToPlot">
                     <mat-option *ngFor="let key of seenKeys[idToPlot]" [value]="key">{{key}}</mat-option>
                 </mat-select>
             </mat-form-field>
@@ -75,13 +76,14 @@
                 <canvas #chartCanvas></canvas>
             </div>
             <mat-card-content>
-                <mat-card-actions style="text-align: center;">
-                    <button mat-raised-button color="accent" (click)="plotData(false)"
-                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot || livePlotStarted">{{lang.monitor.buttonPlot}}</button>
-
-                    <button mat-raised-button color="accent" (click)="plotData(true)"
-                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || !keyToPlot">{{ livePlotStarted ? lang.monitor.buttonLiveStop : lang.monitor.buttonLivePlot}}</button>
-                </mat-card-actions>
+                <div class="plot-buttons">
+                    <button class="plot-button" mat-raised-button color="accent" (click)="plotData(false)"
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || (!keyToPlot && idToPlot !== 'All') || livePlotStarted">{{lang.monitor.buttonPlot}}</button>
+                    <button class="plot-button" mat-raised-button color="accent" (click)="plotData(true)"
+                        [disabled]="this.receivedPackets.length === 0 || !idToPlot || (!serialService.connected && !livePlotStarted) || (!keyToPlot && idToPlot !== 'All') ">{{livePlotStarted ? lang.monitor.buttonLiveStop : lang.monitor.buttonLivePlot}}</button>
+                    <button class="plot-button" mat-raised-button color="accent" (click)="clearPlot()"
+                        [disabled]="this.receivedPackets.length === 0 || this.livePlotStarted">{{lang.monitor.buttonClearPlot}}</button>
+                </div>
             </mat-card-content>
         </mat-card>
 
