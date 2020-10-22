@@ -46,7 +46,7 @@ export class SerialService {
         if (!this.connected) {
             navigator['serial'].requestPort(options).then((p) => {
                 this.port = p;
-                p.open({ baudrate: 230400 }).then(() => {
+                p.open({ baudrate: 230400, baudRate: 230400 }).then(() => {
                     this.connected = true;
                     this.transform = new TransformStream(new RawPacketTransform());
                     this.inputDone = p.readable.pipeThrough(this.transform);
@@ -137,7 +137,7 @@ export class MircoBitPacket {
                 this.data= val;
                 break;
             case 2: // string, length specified in rawData[12]
-                this.key = 'Data';
+                this.key = 'Text';
                 this.data = rawData.slice(13, 13 + rawData[12]).map(e => String.fromCharCode(e)).join('');
                 break;
             case 3: // never seen it :/ Probably supposed to be "key"=string, but that is not available in makecode
