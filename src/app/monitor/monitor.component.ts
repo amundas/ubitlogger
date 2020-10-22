@@ -202,7 +202,7 @@ export class MonitorComponent implements AfterViewInit, OnDestroy {
             })
         } else {
             dataToPlot[this.idToPlot] = this.getFilteredPackets(this.idToPlot, this.keyToPlot);
-            if (typeof dataToPlot[this.idToPlot][this.keyToPlot] !== 'number') {
+            if (typeof dataToPlot[this.idToPlot][0]["data"] !== 'number') {
                 this.openSnackBar(this.lang.monitor.snackBarNoTextPlot, '', 2000);
                 return;
             }
